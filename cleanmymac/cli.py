@@ -18,15 +18,25 @@
 
 import argparse
 from cleanmymac.__version__ import str_version
+from cleanmymac.log import info, warn, error, debug
 
 __author__ = 'cosmin'
 
 
 def get_parser():
     parser = argparse.ArgumentParser(description='cleanmymac v{0}'.format(str_version))
+    parser.add_argument('-u', '--update', action='store_true',
+                        help='update the target if applicable')
+    parser.add_argument('-d', '--dry_run', action='store_true',
+                        help='describe the actions to be performed, do not execute them')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='run in verbose mode')
+    parser.add_argument('-c', '--config', action='store', default=None,
+                        help='specify the configuration path')
     return parser
 
 
 def run_cmd():
     parser = get_parser()
     args = parser.parse_args()
+    info('clean my mac!')

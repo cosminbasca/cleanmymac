@@ -34,7 +34,8 @@ with open('README.md') as f:
     DESCRIPTION = f.read()
 
 pip_deps = [
-    # 'nose>=1.3.0',
+    'sarge>=0.1.4',
+    'tqdm>=3.4.0',
 ]
 
 manual_deps = []

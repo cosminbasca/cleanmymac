@@ -16,7 +16,11 @@
 # limitations under the License.
 #
 
+from collections import namedtuple
+
 __author__ = 'basca'
 
-version = (0, 0, 2)
-str_version = '.'.join([str(v) for v in version])
+VersionSpec = namedtuple('VersionSpec', ['major', 'minor', 'revision'])
+
+version = VersionSpec(0, 0, 2)
+str_version = '.'.join(map(str, version))
