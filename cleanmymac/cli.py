@@ -29,7 +29,8 @@ __author__ = 'cosmin'
 
 def get_options(path=None):
     if not path:
-        path = '~/.cleanmymac.yaml'
+        path = os.path.join(os.path.expanduser('~'), '.cleanmymac.yaml')
+    path = os.path.abspath(path)
     if not os.path.exists(path):
         warn('global configuration file not found, proceeding without.')
         return {}
@@ -62,7 +63,7 @@ def run_cmd():
     _log = info if args.verbose else debug
     _log('found {0} registered cleanup targets'.format(len(targets)))
 
-    config = get_options(args.config)
+    config = get_options(path=args.config)
 
     for name, TargetClass in targets_iterator:
         if not issubclass(TargetClass, Target):
