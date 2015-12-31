@@ -55,7 +55,8 @@ def error(msg, *args):
 def get_logger(name=LOGGER_NAME, handler=None):
     import logging
 
-    LOG_FORMAT = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+    # LOG_FORMAT = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
+    LOG_FORMAT = '%(levelname)-8s %(message)s'
     logging._acquireLock()
     try:
         # general setup

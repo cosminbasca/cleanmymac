@@ -36,6 +36,7 @@ with open('README.md') as f:
 pip_deps = [
     'sarge>=0.1.4',
     'tqdm>=3.4.0',
+    'pyyaml>=3.11',
 ]
 
 manual_deps = []

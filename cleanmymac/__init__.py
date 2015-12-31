@@ -20,5 +20,6 @@ from log import *
 __author__ = 'cosmin'
 
 setup_logger()
-set_logger_level(DEBUG)
+# set_logger_level(DEBUG)
+set_logger_level(INFO)
 
