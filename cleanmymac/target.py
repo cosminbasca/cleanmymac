@@ -42,23 +42,45 @@ class Target(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, config, update=False, verbose=False):
+        """
+        initialize a cleanup target
+        :param config: a configuration dictionary
+        :param update: perform the update before cleanup if True
+        :param verbose: verbose output if True
+        """
         self._config = config if isinstance(config, dict) else {}
         self._update = update
         self._verbose = verbose
 
     @abstractmethod
     def update(self, **kwargs):
+        """
+        the update operation
+        :param kwargs: additional arguments
+        """
         pass
 
     @abstractmethod
     def clean(self, **kwargs):
+        """
+        the cleanup operation
+        :param kwargs: additional arguments
+        """
         pass
 
     @abstractmethod
     def describe(self):
+        """
+        the description of the combined update and clean operations
+        :return: a string describing the steps to be undertaken
+        """
         return ''
 
     def __call__(self, **kwargs):
+        """
+        initiate the cleanup (and update if enabled) operations
+        :param kwargs: additional arguments
+        """
         if self._update:
             self.update(**kwargs)
         self.clean(**kwargs)
