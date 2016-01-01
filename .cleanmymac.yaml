@@ -1,3 +1,5 @@
-'anaconda': {
-  'PATH': '~/anaconda/bin'
+anaconda: {
+  env: {
+    PATH: '~/anaconda/bin',
+  },
 }

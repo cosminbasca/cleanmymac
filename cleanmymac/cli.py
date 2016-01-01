@@ -19,7 +19,8 @@
 import argparse
 from cleanmymac.__version__ import str_version
 from cleanmymac.log import info, warn, error, debug
-from cleanmymac.target import iter_targets, Target
+from cleanmymac.schema import validate_yaml_config
+from cleanmymac.target import iter_targets, Target, register_yaml_shell_commands
 from tqdm import tqdm
 from yaml import load
 import os
@@ -28,15 +29,16 @@ __author__ = 'cosmin'
 
 
 def get_options(path=None):
+    cfg = {}
     if not path:
         path = os.path.join(os.path.expanduser('~'), '.cleanmymac.yaml')
     path = os.path.abspath(path)
     if not os.path.exists(path):
         warn('global configuration file not found, proceeding without.')
-        return {}
     else:
         with open(path, 'r+') as cfg:
-            return load(cfg)
+            cfg = load(cfg)
+    return validate_yaml_config(cfg)
 
 
 def get_parser():
@@ -50,6 +52,8 @@ def get_parser():
                         help='run in verbose mode')
     parser.add_argument('-c', '--config', action='store', default=None,
                         help='specify the configuration path')
+    parser.add_argument('-t', '--targets_path', action='store', default=None,
+                        help='specify extra yaml defined targets path')
     return parser
 
 
@@ -64,14 +68,19 @@ def run_cmd():
     _log('found {0} registered cleanup targets'.format(len(targets)))
 
     config = get_options(path=args.config)
+    # register extra targets if any
+    if args.targets_path and os.path.isdir(args.targets_path):
+        register_yaml_shell_commands(args.targets_path)
 
-    for name, TargetClass in targets_iterator:
-        if not issubclass(TargetClass, Target):
-            error('expected a subclass of Target, instead got: {0}'.format(TargetClass))
-            continue
+    for name, target_initializer in targets_iterator:
         _log('cleaning: {0}'.format(name))
         target_cfg = config[name] if name in config else None
-        target = TargetClass(target_cfg, update=args.update, verbose=args.verbose)
+        target = target_initializer(target_cfg, update=args.update, verbose=args.verbose)
+
+        if not isinstance(target, Target):
+            error('expected an instance of Target, instead got: {0}'.format(target))
+            continue
+
         if args.dry_run:
             _log('commands to run: \n{0}'.format(target.describe()))
         else:

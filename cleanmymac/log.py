@@ -15,8 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-__author__ = 'basca'
+from colorlog import ColoredFormatter
+import logging
 
 LOGGER_NAME = 'cleanmymac'
 
@@ -53,14 +53,15 @@ def error(msg, *args):
 
 
 def get_logger(name=LOGGER_NAME, handler=None):
-    import logging
-
     # LOG_FORMAT = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
     LOG_FORMAT = '%(levelname)-8s %(message)s'
+    # COLOR_LOG_FORMAT = '%(log_color)s%(levelname)-8s%(reset)s %(message)s'
+    COLOR_LOG_FORMAT = '%(log_color)s%(message)s'
     logging._acquireLock()
     try:
         # general setup
-        formatter = logging.Formatter(LOG_FORMAT)
+        # formatter = logging.Formatter(LOG_FORMAT)
+        formatter = ColoredFormatter(COLOR_LOG_FORMAT)
 
         if not handler:
             handler = [logging.StreamHandler()]

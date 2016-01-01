@@ -71,3 +71,11 @@ def exists(cmd, mode=os.F_OK | os.X_OK, path=None):
                 if _access_check(name, mode):
                     return True
     return False
+
+
+def yaml_files(path):
+    if not os.path.isdir(path):
+        raise ValueError('{0} not a directory'.format(path))
+    for _file in os.listdir(path):
+        if _file.endswith(".yaml"):
+            yield os.path.splitext(_file)[0], os.path.join(path, _file)

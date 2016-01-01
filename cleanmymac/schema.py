@@ -15,12 +15,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA
 
-from collections import namedtuple
 
-__author__ = 'basca'
+def get_yaml_shell_command_schema():
+    return Schema({
+        Required('update_commands', default=[]): All(list),
+        Required('clean_commands'): All(list),
+    })
 
-VersionSpec = namedtuple('VersionSpec', ['major', 'minor', 'revision'])
 
-version = VersionSpec(0, 0, 5)
-str_version = '.'.join(map(str, version))
+def validate_yaml_shell_command(description):
+    assert isinstance(description, dict)
+    schema = get_yaml_shell_command_schema()
+    return schema(description)
+
+
+def get_yaml_config_schema():
+    return Schema({
+        Optional('env'): dict,
+    }, extra=ALLOW_EXTRA)
+
+
+def validate_yaml_config(config):
+    schema = get_yaml_config_schema()
+    return schema(config)
