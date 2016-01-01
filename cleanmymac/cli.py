@@ -52,6 +52,8 @@ def get_parser():
                         help='describe the actions to be performed, do not execute them')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='run in quiet mode')
+    parser.add_argument('-s', '--stop_on_error', action='store_true',
+                        help='stop execution when first error is detected')
     parser.add_argument('-c', '--config', action='store', default=None,
                         help='specify the configuration path')
     parser.add_argument('-t', '--targets_path', action='store', default=None,
@@ -68,6 +70,7 @@ def run_cmd():
     verbose = not args.quiet
     dry_run = args.dry_run
     targets_path = args.targets_path
+    stop_on_error = args.stop_on_error
 
     targets_iterator = targets.iteritems() if verbose else tqdm(targets.iteritems())
 
@@ -98,5 +101,6 @@ def run_cmd():
             except Exception, ex:
                 error('could not cleanup target "{0}". Reason:\n{1}'.format(
                     name, ex))
-                continue
+                if stop_on_error:
+                    break
     _log('\ncleanup complete')

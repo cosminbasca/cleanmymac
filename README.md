@@ -4,21 +4,22 @@ A simple command line tool to clean old stuff from your mac
 # usage
 ```bash
 $ cleanmymac -h
-  usage: cleanmymac [-h] [-u] [-d] [-q] [-c CONFIG] [-t TARGETS_PATH]
-  
-  cleanmymac v0.0.6, a simple utility designed to help clean your mac from
-  old/unwanted stuff
-  
-  optional arguments:
-    -h, --help            show this help message and exit
-    -u, --update          update the target if applicable
-    -d, --dry_run         describe the actions to be performed, do not execute
-                          them
-    -q, --quiet           run in quiet mode
-    -c CONFIG, --config CONFIG
-                          specify the configuration path
-    -t TARGETS_PATH, --targets_path TARGETS_PATH
-                          specify extra yaml defined targets path
+usage: cleanmymac [-h] [-u] [-d] [-q] [-s] [-c CONFIG] [-t TARGETS_PATH]
+
+cleanmymac v0.1.3, a simple utility designed to help clean your mac from
+old/unwanted stuff
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u, --update          update the target if applicable
+  -d, --dry_run         describe the actions to be performed, do not execute
+                        them
+  -q, --quiet           run in quiet mode
+  -s, --stop_on_error   stop execution when first error is detected
+  -c CONFIG, --config CONFIG
+                        specify the configuration path
+  -t TARGETS_PATH, --targets_path TARGETS_PATH
+                        specify extra yaml defined targets path
 ```
 
 a typical usage pattern is: 
