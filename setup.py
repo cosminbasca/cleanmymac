@@ -41,8 +41,6 @@ pip_deps = [
     'colorlog>=2.6.0',
 ]
 
-manual_deps = []
-
 setup(
     name=NAME,
     version=str_version,
@@ -51,25 +49,24 @@ setup(
     # url=None,
     description='a simple utility to clean your mac of old stuff',
     long_description=DESCRIPTION,
-    # classifiers=[
-    #     'Intended Audience :: Developers',
-    #     'License :: OSI Approved :: Apache Software License',
-    #     'Natural Language :: English',
-    #     'Operating System :: OS Independent',
-    #     'Programming Language :: Python',
-    #     'Programming Language :: JavaScript',
-    #     'Topic :: Software Development'
-    # ],
+    classifiers=[
+        'Intended Audience :: End Users/Desktop',
+        'License :: OSI Approved :: Apache Software License',
+        'Natural Language :: English',
+        'Operating System :: MacOS',
+        'Programming Language :: Python',
+        'Programming Language :: Yaml',
+        'Topic :: Utilities',
+    ],
     packages=[
         NAME,
-        # '{0}/templates'.format(NAME),
-        # '{0}/test'.format(NAME),
+        '{0}/target'.format(NAME),
     ],
     package_data={
-        NAME: [# '*.ini',
-               ]
+        NAME: ['*.yaml', ],
+        '{0}/target'.format(NAME): ['*.yaml', ],
     },
-    install_requires=manual_deps + pip_deps,
+    install_requires=pip_deps,
     entry_points={
         'console_scripts': [
             'cleanmymac = cleanmymac.cli:run_cmd'
