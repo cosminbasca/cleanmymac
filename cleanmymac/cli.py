@@ -20,8 +20,9 @@
 import argparse
 from cleanmymac.__version__ import str_version
 from cleanmymac.log import info, warn, error, debug
+from cleanmymac.registry import iter_targets, register_yaml_targets
 from cleanmymac.schema import validate_yaml_config
-from cleanmymac.target import iter_targets, Target, register_yaml_shell_commands
+from cleanmymac.target import Target
 from tqdm import tqdm
 from yaml import load
 import os
@@ -76,7 +77,7 @@ def run_cmd():
     config = get_options(path=args.config)
     # register extra targets if any
     if targets_path and os.path.isdir(targets_path):
-        register_yaml_shell_commands(targets_path)
+        register_yaml_targets(targets_path)
 
     for name, target_initializer in targets_iterator:
         _log('--------------------------------------------------------------------------------')

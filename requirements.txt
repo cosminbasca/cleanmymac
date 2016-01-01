@@ -3,3 +3,4 @@ tqdm>=3.4.0
 pyyaml>=3.11
 voluptuous>=0.8.8
 colorlog>=2.6.0
+natsort>=4.0.4

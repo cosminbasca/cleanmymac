@@ -1,0 +1,5 @@
+type: 'dir'
+args: [
+  { dir: '/Library/Java/JavaVirtualMachines',
+  pattern: 'jdk\d\.\d\.\d_\d+\.jdk' },
+]

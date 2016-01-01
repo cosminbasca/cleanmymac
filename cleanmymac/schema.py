@@ -15,28 +15,56 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA
+
+from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA, Any, IsDir, In, Or
+
+from cleanmymac.constants import VALID_TARGET_TYPES
 
 
-def get_yaml_shell_command_schema():
+def _args_cmd_schema():
     return Schema({
         Required('update_commands', default=[]): All(list),
         Required('clean_commands'): All(list),
     })
 
 
-def validate_yaml_shell_command(description):
-    assert isinstance(description, dict)
-    schema = get_yaml_shell_command_schema()
-    return schema(description)
+def _args_dir_schema():
+    return Schema([
+        {
+            Required('dir'): IsDir(),
+            Required('pattern'): str
+        }
+    ])
+
+__TYPE_SCHEMA__ = {
+    'cmd': _args_cmd_schema(),
+    'dir': _args_dir_schema()
+}
 
 
-def get_yaml_config_schema():
+def _target_schema():
+    return Schema({
+        Required('type'): All(str, In(VALID_TARGET_TYPES)),
+        Required('args'): Or(list, dict)
+    })
+
+
+def validate_yaml_target(description):
+    global __TYPE_SCHEMA__
+    schema = _target_schema()
+    description = schema(description)
+    _type = description['type']
+    _args = description['args']
+    description['args'] = __TYPE_SCHEMA__[_type](_args)
+    return description
+
+
+def _config_schema():
     return Schema({
         Optional('env'): dict,
     }, extra=ALLOW_EXTRA)
 
 
 def validate_yaml_config(config):
-    schema = get_yaml_config_schema()
+    schema = _config_schema()
     return schema(config)

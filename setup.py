@@ -39,6 +39,7 @@ pip_deps = [
     'pyyaml>=3.11',
     'voluptuous>=0.8.8',
     'colorlog>=2.6.0',
+    'natsort>=4.0.4',
 ]
 
 setup(
@@ -60,11 +61,9 @@ setup(
     ],
     packages=[
         NAME,
-        '{0}/target'.format(NAME),
     ],
     package_data={
-        NAME: ['*.yaml', ],
-        '{0}/target'.format(NAME): ['*.yaml', ],
+        '{0}/builtins'.format(NAME): ['*.yaml', ],
     },
     install_requires=pip_deps,
     entry_points={

@@ -16,11 +16,11 @@
 # limitations under the License.
 #
 
-from collections import namedtuple
+TARGET_ENTRY_POINT = 'cleanmymac.target'
+TYPE_TARGET_CMD = 'cmd'
+TYPE_TARGET_DIR = 'dir'
 
-__author__ = 'basca'
-
-VersionSpec = namedtuple('VersionSpec', ['major', 'minor', 'revision'])
-
-version = VersionSpec(0, 1, 0)
-str_version = '.'.join(map(str, version))
+VALID_TARGET_TYPES = frozenset({
+    TYPE_TARGET_DIR,
+    TYPE_TARGET_CMD
+})

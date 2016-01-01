@@ -1,0 +1,10 @@
+type: 'cmd'
+args: {
+  update_commands: [
+    'brew update',
+    'brew outdated | brew upgrade'
+  ],
+  clean_commands: [
+    'brew cleanup'
+  ]
+}

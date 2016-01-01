@@ -1,0 +1,10 @@
+type: 'cmd'
+args: {
+  update_commands: [
+    'conda update conda',
+    'conda update anaconda'
+  ],
+  clean_commands: [
+    'conda clean -p -s -t -y'
+  ]
+}

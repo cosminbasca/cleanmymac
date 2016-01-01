@@ -1,0 +1,5 @@
+type: 'dir'
+args: [
+  { dir: '/usr/local/texlive/',
+  pattern: '\d+' },
+]
