@@ -4,7 +4,7 @@ A simple command line tool to clean old stuff from your mac
 # usage
 ```bash
 $ cleanmymac -h
-usage: cleanmymac [-h] [-u] [-d] [-q] [-s] [-c CONFIG] [-t TARGETS_PATH]
+sage: cleanmymac [-h] [-u] [-d] [-q] [-l] [-s] [-c CONFIG] [-t TARGETS_PATH]
 
 cleanmymac v0.1.3, a simple utility designed to help clean your mac from
 old/unwanted stuff
@@ -15,6 +15,7 @@ optional arguments:
   -d, --dry_run         describe the actions to be performed, do not execute
                         them
   -q, --quiet           run in quiet mode
+  -l, --list            list registered cleanup targets
   -s, --stop_on_error   stop execution when first error is detected
   -c CONFIG, --config CONFIG
                         specify the configuration path
@@ -94,6 +95,19 @@ args: [
 **note**: see the *cleanmymac.builtins* module for more details
 
 and point *cleanmymac* to the folder where the yaml files reside with the *-t* command line option
+
+# builtin targets
+
+to see a list of builtin targets run:
+```bash
+$ cleanmymac -l
+```
+
+currently the following are supported:
+ * homebrew
+ * java jdk
+ * texlive
+ * anaconda
 
 # disclaimer
 
