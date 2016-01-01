@@ -32,27 +32,59 @@ NOTSET = 0
 
 
 def debug(msg, *args):
+    """
+    log debug messages. It uses the __debug__ python special var for speedy processing of
+    debug messages when debugging is disabled
+    :param msg: the message + format
+    :param args: message arguments
+    :return: nothing
+    """
     if __debug__:
         if _logger:
             _logger.log(DEBUG, msg, *args)
 
 
 def info(msg, *args):
+    """
+    log info messages
+    :param msg: the message + format
+    :param args: message arguments
+    :return: nothing
+    """
     if _logger:
         _logger.log(INFO, msg, *args)
 
 
 def warn(msg, *args):
+    """
+    log warning messages
+    :param msg: the message + format
+    :param args: message arguments
+    :return: nothing
+    """
     if _logger:
         _logger.log(WARNING, msg, *args)
 
 
 def error(msg, *args):
+    """
+    log error messages
+    :param msg: the message + format
+    :param args: message arguments
+    :return: nothing
+    """
     if _logger:
         _logger.log(ERROR, msg, *args)
 
 
 def get_logger(name=LOGGER_NAME, handler=None):
+    """
+    create a logger
+    the method is thread safe
+    :param name: the name of the logger, by default LOGGER_NAME is used
+    :param handler: add a logging handler, if None, a default console handler is created
+    :return: the logger
+    """
     # LOG_FORMAT = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
     LOG_FORMAT = '%(levelname)-8s %(message)s'
     # COLOR_LOG_FORMAT = '%(log_color)s%(levelname)-8s%(reset)s %(message)s'
@@ -80,24 +112,44 @@ def get_logger(name=LOGGER_NAME, handler=None):
 
 
 def setup_logger(name=LOGGER_NAME, handler=None):
+    """
+    set the module global logger object
+    :param name: the logger name
+    :param handler: the logger handler, None for console
+    :return: nothing
+    """
     global _logger
     _logger = get_logger(name=name, handler=handler)
 
 
 def uninstall_logger():
+    """
+    uninstalls a previously set up logger
+    :return: nothing
+    """
     global _logger
     _logger = None
 
 
 def set_logger(logger):
+    """
+    install an existing logger as the module global logger
+    :param logger: the logger
+    :return: nothing
+    """
     global _logger
     if logger:
         _logger = logger
 
 
 def set_logger_level(level, name=None):
-    import logging
-
+    """
+    set the logging level for the given logger name
+    the method is thread safe
+    :param level: the level
+    :param name: the logger name, if name is not found the logging.root logger is configured
+    :return: nothing
+    """
     logging._acquireLock()
     try:
         logger = logging.getLogger(name) if name else logging.root
@@ -109,4 +161,10 @@ def set_logger_level(level, name=None):
 
 
 def disable_logger(name=None):
+    """
+    disable the given logger. This is a convenience method
+    the method is thread safe
+    :param name: the logger name
+    :return: nothing
+    """
     set_logger_level(DISABLED, name=name)

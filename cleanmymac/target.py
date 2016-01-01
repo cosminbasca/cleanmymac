@@ -36,6 +36,9 @@ import re
 
 
 class Target(object):
+    """
+    the main cleanup Target class
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, config, update=False, verbose=False):

@@ -31,6 +31,14 @@ __author__ = 'cosmin'
 
 
 def get_options(path=None):
+    """
+    Return the global configuration options. This method also expands the user home folder
+    specified by '~'. In addition, the yaml config file is validated after parse.
+    If the path is not specified, the ~/.cleanmymac.yaml configuration file is looked up, if not
+    found, the global configuration is set to an empty dict.
+    :param path: optional path to a yaml configuration file
+    :return: a python object containing the actual configuration (typically a dict)
+    """
     cfg = {}
     if not path:
         path = os.path.join(os.path.expanduser('~'), '.cleanmymac.yaml')
@@ -44,6 +52,10 @@ def get_options(path=None):
 
 
 def get_parser():
+    """
+    creates and returns the parsed used by the command line utility
+    :return: an argparse parser
+    """
     parser = argparse.ArgumentParser(description='cleanmymac v{0}, a simple utility designed to help clean your mac '
                                                  'from old/unwanted stuff'.format(str_version))
     parser.add_argument('-u', '--update', action='store_true',
@@ -64,6 +76,11 @@ def get_parser():
 
 
 def run_cmd():
+    """
+    the main **run** method, responsible for creating the parser and executing the main logic in
+    cleanmymac
+    :return: nothing
+    """
     parser = get_parser()
     args = parser.parse_args()
     targets = dict(iter_targets())
