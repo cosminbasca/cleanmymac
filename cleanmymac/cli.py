@@ -93,5 +93,10 @@ def run_cmd():
         if dry_run:
             _describe(target.describe())
         else:
-            target()
+            try:
+                target()
+            except Exception, ex:
+                error('could not cleanup target "{0}". Reason:\n{1}'.format(
+                    name, ex))
+                continue
     _log('\ncleanup complete')
