@@ -56,13 +56,13 @@ one can add more *cleanup targets* either by installing them as python classes r
 entry-point: **cleanmymac.target** like this (in setup.py):
 
 ```python
-    entry_points={
-        # ....
-        'cleanmymac.target': [
-            'my_target_name = my.python.package.MyTargetClass'
-        ]
-        # ...
-    }
+entry_points={
+    # ....
+    'cleanmymac.target': [
+        'my_target_name = my.python.package.MyTargetClass'
+    ]
+    # ...
+}
 ```
 
 alternatively for shell based commands simply create yaml files with the following schema:
