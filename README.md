@@ -53,7 +53,7 @@ anaconda: {
 # extensibility
 
 one can add more *cleanup targets* either by installing them as python classes registered to the following
-entry-point: **cleanmymac.target*** like this (in setup.py):
+entry-point: **cleanmymac.target** like this (in setup.py):
 
 ```python
     entry_points={
