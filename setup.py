@@ -61,6 +61,7 @@ setup(
     ],
     packages=[
         NAME,
+        '{0}/builtins'.format(NAME),
     ],
     package_data={
         '{0}/builtins'.format(NAME): ['*.yaml', ],

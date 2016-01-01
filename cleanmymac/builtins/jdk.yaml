@@ -1,5 +1,11 @@
 type: 'dir'
 args: [
-  { dir: '/Library/Java/JavaVirtualMachines',
-  pattern: 'jdk\d\.\d\.\d_\d+\.jdk' },
+  {
+    dir: '/Library/Java/JavaVirtualMachines',
+    pattern: 'jdk1\.7\.\d_\d+\.jdk'
+  },
+  {
+    dir: '/Library/Java/JavaVirtualMachines',
+    pattern: 'jdk1\.8\.\d_\d+\.jdk'
+  },
 ]

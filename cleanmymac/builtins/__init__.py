@@ -15,12 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 
-from collections import namedtuple
-
-__author__ = 'basca'
-
-VersionSpec = namedtuple('VersionSpec', ['major', 'minor', 'revision'])
-
-version = VersionSpec(0, 1, 1)
-str_version = '.'.join(map(str, version))
+BUILTINS_PATH = os.path.dirname(os.path.realpath(__file__))

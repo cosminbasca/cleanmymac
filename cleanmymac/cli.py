@@ -72,6 +72,8 @@ def run_cmd():
     targets_iterator = targets.iteritems() if verbose else tqdm(targets.iteritems())
 
     _log = info if verbose else debug
+    _describe = warn if verbose else debug
+
     _log('found {0} registered cleanup targets'.format(len(targets)))
 
     config = get_options(path=args.config)
@@ -80,9 +82,7 @@ def run_cmd():
         register_yaml_targets(targets_path)
 
     for name, target_initializer in targets_iterator:
-        _log('--------------------------------------------------------------------------------')
-        _log(' cleaning: {0}'.format(name))
-        _log('--------------------------------------------------------------------------------')
+        _log('\ncleaning: {0}'.format(name.upper()))
         target_cfg = config[name] if name in config else None
         target = target_initializer(target_cfg, update=update, verbose=verbose)
 
@@ -91,7 +91,7 @@ def run_cmd():
             continue
 
         if dry_run:
-            _log('commands to run: \n{0}'.format(target.describe()))
+            _describe(target.describe())
         else:
             target()
-    _log('cleanup complete')
+    _log('\ncleanup complete')

@@ -17,6 +17,7 @@
 #
 import os
 import sys
+import itertools
 
 
 def exists(cmd, mode=os.F_OK | os.X_OK, path=None):
@@ -79,3 +80,8 @@ def yaml_files(path):
     for _file in os.listdir(path):
         if _file.endswith(".yaml"):
             yield os.path.splitext(_file)[0], os.path.join(path, _file)
+
+
+def flatten(lst):
+    assert isinstance(lst, list)
+    return list(itertools.chain(*lst))

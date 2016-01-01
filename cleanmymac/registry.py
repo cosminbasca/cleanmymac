@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+from cleanmymac.builtins import BUILTINS_PATH
 from cleanmymac.log import debug, error
 from cleanmymac.constants import TARGET_ENTRY_POINT, VALID_TARGET_TYPES, TYPE_TARGET_CMD, TYPE_TARGET_DIR
 from cleanmymac.schema import validate_yaml_target
@@ -26,9 +26,6 @@ from functools import partial
 from yaml import load
 import os
 
-
-BUILTIN_REGISTRY_PATH = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), 'builtins')
 
 __TARGETS__ = {}
 __YAML_TYPES__ = {
@@ -94,7 +91,7 @@ def iter_targets():
 
 # register built in targets
 # 1 YAML based ones
-register_yaml_targets(BUILTIN_REGISTRY_PATH)
+register_yaml_targets(BUILTINS_PATH)
 
 # register installed targets (if any)
 debug("looking for registered cleanup targets...")

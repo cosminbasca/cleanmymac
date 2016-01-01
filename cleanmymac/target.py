@@ -16,7 +16,11 @@
 # limitations under the License.
 #
 from abc import ABCMeta, abstractmethod, abstractproperty
+
+from shutil import rmtree
+
 from cleanmymac.log import info, debug, error, warn
+from cleanmymac.util import flatten
 from sarge import run, shell_format, Capture
 from natsort import natsorted
 from pprint import pformat
@@ -29,6 +33,8 @@ import re
 # the base Target class
 #
 # ----------------------------------------------------------------------------------------
+
+
 class Target(object):
     __metaclass__ = ABCMeta
 
@@ -152,20 +158,27 @@ class DirTarget(Target):
     def _to_remove(self):
         for entry in self.entries:
             _dir = entry['dir']
-            _pattern = re.compile(entry['pattern'])
-            dirs = [d for d in os.listdir(_dir)
-                    if os.path.isdir(d) and _pattern.match(d)]
-            dirs = natsorted(dirs)
-            print dirs
+            _pattern = entry['pattern']
+            dirs = [os.path.join(_dir, d) for d in os.listdir(_dir)
+                    if os.path.isdir(os.path.join(_dir, d)) and re.match(_pattern, d)]
+            dirs = natsorted(dirs, reverse=True)
             yield dirs[1:]
 
     def clean(self, **kwargs):
-        pass
+        to_remove = flatten(list(self._to_remove()))
+        for _dir in to_remove:
+            rmtree(_dir)
 
     def describe(self):
-        return '''
-will remove the following folders: {0}
-        '''.format(pformat(list(self._to_remove())))
+        msgs = []
+        if self._update:
+            msgs.append('update not supported for "dir" targets')
+        to_remove = flatten(list(self._to_remove()))
+        if to_remove:
+            msgs.append('will remove the following folders: {0}'.format(pformat(to_remove)))
+        else:
+            msgs.append('no cleanup action necessary at this point')
+        return '\n'.join(msgs)
 
     @abstractproperty
     def entries(self):

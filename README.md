@@ -68,9 +68,29 @@ entry-point: **cleanmymac.target** like this (in setup.py):
 alternatively for shell based commands simply create yaml files with the following schema:
 
 ```yaml
-update_commands: []
-clean_commands: []
+type: 'cmd'
+args: {
+  update_commands: [
+    'brew update',
+    'brew outdated | brew upgrade'
+  ],
+  clean_commands: [
+    'brew cleanup'
+  ]
+}
 ```
+
+or for cleaning up directories (removing all but the latest version):
+
+```yaml
+type: 'dir'
+args: [
+  { dir: '/usr/local/texlive/',
+  pattern: '\d+' },
+]
+```
+
+**note**: see the *cleanmymac.builtins* module for more details
 
 and point *cleanmymac* to the folder where the yaml files reside with the *-t* command line option
 
