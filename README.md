@@ -4,9 +4,9 @@ A simple command line tool to clean old stuff from your mac
 # usage
 ```bash
 $ cleanmymac -h
-  usage: cleanmymac [-h] [-u] [-d] [-v] [-c CONFIG] [-t TARGETS_PATH]
+  usage: cleanmymac [-h] [-u] [-d] [-q] [-c CONFIG] [-t TARGETS_PATH]
   
-  cleanmymac v0.0.5, a simple utility designed to help clean your mac from
+  cleanmymac v0.0.6, a simple utility designed to help clean your mac from
   old/unwanted stuff
   
   optional arguments:
@@ -14,7 +14,7 @@ $ cleanmymac -h
     -u, --update          update the target if applicable
     -d, --dry_run         describe the actions to be performed, do not execute
                           them
-    -v, --verbose         run in verbose mode
+    -q, --quiet           run in quiet mode
     -c CONFIG, --config CONFIG
                           specify the configuration path
     -t TARGETS_PATH, --targets_path TARGETS_PATH
@@ -24,7 +24,7 @@ $ cleanmymac -h
 a typical usage pattern is: 
 
 ```bash
-$ cleanmymac -v
+$ cleanmymac
 ```
 
 # installation

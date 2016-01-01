@@ -1,3 +1,4 @@
+# coding=utf-8
 #
 # author: Cosmin Basca
 #
@@ -48,8 +49,8 @@ def get_parser():
                         help='update the target if applicable')
     parser.add_argument('-d', '--dry_run', action='store_true',
                         help='describe the actions to be performed, do not execute them')
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='run in verbose mode')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='run in quiet mode')
     parser.add_argument('-c', '--config', action='store', default=None,
                         help='specify the configuration path')
     parser.add_argument('-t', '--targets_path', action='store', default=None,
@@ -62,26 +63,33 @@ def run_cmd():
     args = parser.parse_args()
     targets = dict(iter_targets())
 
-    targets_iterator = targets.iteritems() if args.verbose else tqdm(targets.iteritems())
+    update = args.update
+    verbose = not args.quiet
+    dry_run = args.dry_run
+    targets_path = args.targets_path
 
-    _log = info if args.verbose else debug
+    targets_iterator = targets.iteritems() if verbose else tqdm(targets.iteritems())
+
+    _log = info if verbose else debug
     _log('found {0} registered cleanup targets'.format(len(targets)))
 
     config = get_options(path=args.config)
     # register extra targets if any
-    if args.targets_path and os.path.isdir(args.targets_path):
-        register_yaml_shell_commands(args.targets_path)
+    if targets_path and os.path.isdir(targets_path):
+        register_yaml_shell_commands(targets_path)
 
     for name, target_initializer in targets_iterator:
-        _log('cleaning: {0}'.format(name))
+        _log('--------------------------------------------------------------------------------')
+        _log(' cleaning: {0}'.format(name))
+        _log('--------------------------------------------------------------------------------')
         target_cfg = config[name] if name in config else None
-        target = target_initializer(target_cfg, update=args.update, verbose=args.verbose)
+        target = target_initializer(target_cfg, update=update, verbose=verbose)
 
         if not isinstance(target, Target):
             error('expected an instance of Target, instead got: {0}'.format(target))
             continue
 
-        if args.dry_run:
+        if dry_run:
             _log('commands to run: \n{0}'.format(target.describe()))
         else:
             target()
