@@ -97,3 +97,4 @@ register_yaml_targets(BUILTINS_PATH)
 debug("looking for registered cleanup targets...")
 for ep in iter_entry_points(TARGET_ENTRY_POINT):
     debug("found: {0}".format(ep))
+    register_target(ep.name, ep.load())
