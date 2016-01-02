@@ -36,8 +36,11 @@ def get_options(path=None):
     specified by '~'. In addition, the yaml config file is validated after parse.
     If the path is not specified, the ~/.cleanmymac.yaml configuration file is looked up, if not
     found, the global configuration is set to an empty dict.
+
     :param path: optional path to a yaml configuration file
-    :return: a python object containing the actual configuration (typically a dict)
+    :type path: str
+    :return: a python object containing the actual configuration
+    :rtype: dict
     """
     cfg = {}
     if not path:
@@ -54,10 +57,14 @@ def get_options(path=None):
 def get_parser():
     """
     creates and returns the parsed used by the command line utility
-    :return: an argparse parser
+
+    :return: the command line parser
+    :rtype: :class:`argparse.ArgumentParser`
     """
     parser = argparse.ArgumentParser(description='cleanmymac v{0}, a simple utility designed to help clean your mac '
                                                  'from old/unwanted stuff'.format(str_version))
+    parser.add_argument('targets', metavar='TARGETS', type=str, nargs='*',
+                        help='the list of targets to execute. Execute all if not specified.')
     parser.add_argument('-u', '--update', action='store_true',
                         help='update the target if applicable')
     parser.add_argument('-d', '--dry_run', action='store_true',
@@ -78,7 +85,7 @@ def get_parser():
 def run_cmd():
     """
     the main **run** method, responsible for creating the parser and executing the main logic in
-    cleanmymac
+    **cleanmymac**
     """
     parser = get_parser()
     args = parser.parse_args()
@@ -90,6 +97,10 @@ def run_cmd():
     targets_path = args.targets_path
     stop_on_error = args.stop_on_error
     list_targets = args.list
+    if args.targets:
+        targets_to_execute = set(args.targets)
+    else:
+        targets_to_execute = set(targets.keys())
 
     targets_iterator = targets.iteritems() if verbose else tqdm(targets.iteritems())
 
@@ -105,9 +116,11 @@ def run_cmd():
 
     if list_targets:
         for name, target_initializer in targets_iterator:
-            warn(' > {0}'.format(name.upper()))
+            warn(' > {0}'.format(name))
     else:
         for name, target_initializer in targets_iterator:
+            if name not in targets_to_execute:
+                continue
             _log('\ncleaning: {0}'.format(name.upper()))
             target_cfg = config[name] if name in config else None
             target = target_initializer(target_cfg, update=update, verbose=verbose)

@@ -1,13 +1,21 @@
 # cleanmymac
 A simple command line tool to clean old stuff from your mac
 
+# documentation
+http://cleanmymac.readthedocs.org/en/latest/
+
 # usage
 ```bash
 $ cleanmymac -h
-sage: cleanmymac [-h] [-u] [-d] [-q] [-l] [-s] [-c CONFIG] [-t TARGETS_PATH]
+usage: cleanmymac [-h] [-u] [-d] [-q] [-l] [-s] [-c CONFIG] [-t TARGETS_PATH]
+                  [TARGETS [TARGETS ...]]
 
-cleanmymac v0.1.3, a simple utility designed to help clean your mac from
+cleanmymac v0.1.5, a simple utility designed to help clean your mac from
 old/unwanted stuff
+
+positional arguments:
+  TARGETS               the list of targets to execute. Execute all if not
+                        specified.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -29,10 +37,6 @@ a typical usage pattern is:
 $ cleanmymac
 ```
 
-
-# documentation
-
-http://cleanmymac.readthedocs.org/en/latest/
 
 # installation
 clone the repository locally and issue

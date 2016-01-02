@@ -35,6 +35,17 @@ __YAML_TYPES__ = {
 
 
 def load_target(yaml_file, config, update=False, verbose=False):
+    """
+    load a target given its description from a **YAML** file.
+    The file is validated according to its type before loading.
+
+    :param str yaml_file: a valid path to a **YAML** file
+    :param dict config: the global configuration dictionary
+    :param bool update: specify whether to perform update before cleanup
+    :param bool verbose: toggle verbosity
+    :return: the target
+    :rtype: :class:`cleanmymac.target.Target`
+    """
     with open(yaml_file, 'r+') as DESC:
         description = load(DESC)
         description = validate_yaml_target(description)
@@ -59,6 +70,13 @@ def load_target(yaml_file, config, update=False, verbose=False):
 
 
 def register_target(name, target):
+    """
+    register a target type to a given target name
+
+    :param str name: the target name (case sensitive)
+    :param target: the target to register
+    :type target: :class:`cleanmymac.target.Target`
+    """
     global __TARGETS__
     if issubclass(target, Target):
         debug('registering : {0}'.format(name))
@@ -68,6 +86,12 @@ def register_target(name, target):
 
 
 def register_yaml_targets(path):
+    """
+    scans and registers all valid **YAML** defined targets in `path`. The name of the
+    **YAML** file (without extension) becomes the target name
+
+    :param str path: a valid directory
+    """
     global __TARGETS__
     for name, yaml_file in yaml_files(path):
         debug('registering : {0}'.format(name))
@@ -75,6 +99,13 @@ def register_yaml_targets(path):
 
 
 def get_target(name):
+    """
+    get a registered target
+
+    :param str name: the target name
+    :return: the target
+    :rtype: :class:`cleanmymac.target.Target`
+    """
     global __TARGETS__
     try:
         return __TARGETS__[name]
@@ -84,6 +115,11 @@ def get_target(name):
 
 
 def iter_targets():
+    """
+    generator over all registered targets
+
+    :return: pairs of (name: target)
+    """
     global __TARGETS__
     for name, target in __TARGETS__.iteritems():
         yield name, target

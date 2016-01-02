@@ -59,6 +59,7 @@ class Target(object):
         the update operation
 
         :param kwargs: additional arguments
+        :type kwargs: dict
         """
         pass
 
@@ -68,6 +69,7 @@ class Target(object):
         the cleanup operation
 
         :param kwargs: additional arguments
+        :type kwargs: dict
         """
         pass
 
@@ -77,6 +79,7 @@ class Target(object):
         the description of the combined update and clean operations
 
         :return: a string describing the steps to be undertaken
+        :rtype: str
         """
         return ''
 
@@ -85,6 +88,7 @@ class Target(object):
         initiate the cleanup (and update if enabled) operations
 
         :param kwargs: additional arguments
+        :type kwargs: dict
         """
         if self._update:
             self.update(**kwargs)
@@ -98,13 +102,15 @@ class Target(object):
 # ----------------------------------------------------------------------------------------
 class ShellCommandTarget(Target):
     """
-    the main cleanup Shell Command Target. This is an abstract class.
-    This class encapsulates the basic logic to execute cleanup operations based on
-    predefined shell commands.
+    Class encapsulating general logic to execute cleanup operations based on predefined
+    shell commands. This is an abstract class.
 
     :param config: a configuration dictionary
+    :type config: dict
     :param update: perform the update before cleanup if True
+    :type update: bool
     :param verbose: verbose output if True
+    :type verbose: bool
     """
     __metaclass__ = ABCMeta
 
@@ -120,10 +126,22 @@ class ShellCommandTarget(Target):
 
     @abstractproperty
     def update_commands(self):
+        """
+        the shell commands executed on **update**. Each command is a string as expected by :func:`sarge.run`
+
+        :return: a list of shell commands
+        :rtype: list
+        """
         return []
 
     @abstractproperty
     def clean_commands(self):
+        """
+        the shell commands executed on **clean**. Each command is a string as expected by :func:`sarge.run`
+
+        :return: a list of shell commands
+        :rtype: list
+        """
         return []
 
     def _run(self, commands):
@@ -167,6 +185,17 @@ class ShellCommandTarget(Target):
 #
 # ----------------------------------------------------------------------------------------
 class YamlShellCommandTarget(ShellCommandTarget):
+    """
+    Class encapsulating logic to initialize and execute cleanup targets defined in **YAML** files.
+    See predefined builtins in :mod:`cleanmymac.builtins`.
+
+    :param config: a configuration dictionary
+    :type config: dict
+    :param update: perform the update before cleanup if True
+    :type update: bool
+    :param verbose: verbose output if True
+    :type verbose: bool
+    """
     def __init__(self, config, update=False, verbose=False):
         self._args = config['args']
         super(YamlShellCommandTarget, self).__init__(config, update=update, verbose=verbose)
@@ -186,6 +215,18 @@ class YamlShellCommandTarget(ShellCommandTarget):
 #
 # ----------------------------------------------------------------------------------------
 class DirTarget(Target):
+    """
+    Class encapsulating the logic to execute directory based cleanup operations. The main operation
+    consists of identifying and removing all matching directories in a given path with the exception
+    of the most recent version. This is an abstract class.
+
+    :param config: a configuration dictionary
+    :type config: dict
+    :param update: perform the update before cleanup if True
+    :type update: bool
+    :param verbose: verbose output if True
+    :type verbose: bool
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, config, update=False, verbose=False):
@@ -221,6 +262,12 @@ class DirTarget(Target):
 
     @abstractproperty
     def entries(self):
+        """
+        the list of entries (pairs of path: regex pattern) to scan for cleanup. Keeps latest versions only.
+
+        :return: a list of entries path:pattern pairs
+        :rtype: list
+        """
         return []
 
 
@@ -230,6 +277,19 @@ class DirTarget(Target):
 #
 # ----------------------------------------------------------------------------------------
 class YamlDirTarget(DirTarget):
+    """
+    Class encapsulating the logic to execute directory based cleanup operations. The main operation
+    consists of identifying and removing all matching directories in a given path with the exception
+    of the most recent version. This concrete implementation allows for the specification of entries
+    in a **YAML** configuration file. See predefined builtins in :mod:`cleanmymac.builtins`.
+
+    :param config: a configuration dictionary
+    :type config: dict
+    :param update: perform the update before cleanup if True
+    :type update: bool
+    :param verbose: verbose output if True
+    :type verbose: bool
+    """
     def __init__(self, config, update=False, verbose=False):
         self._args = config['args']
         super(YamlDirTarget, self).__init__(config, update=update, verbose=verbose)

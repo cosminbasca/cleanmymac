@@ -21,6 +21,16 @@ import itertools
 
 
 def exists(cmd, mode=os.F_OK | os.X_OK, path=None):
+    """
+    checks to see if a command exists. The function is an adaptation of :func:`shutil.which`
+    introduced in Python 3.3. See more here:
+    https://hg.python.org/cpython/file/default/Lib/shutil.py in Python 3.3
+
+    :param str cmd: the command to check
+    :param int mode: the command access mode
+    :param str path: lookup the command in `path` if specified. Default None
+    :return:
+    """
     # function based on: which from https://hg.python.org/cpython/file/default/Lib/shutil.py
     # Check that a given file can be accessed with the correct mode.
     # Additionally check that `file` is not a directory, as on Windows
@@ -75,6 +85,13 @@ def exists(cmd, mode=os.F_OK | os.X_OK, path=None):
 
 
 def yaml_files(path):
+    """
+    generator of **YAML** files in the give path.
+
+    :param path: the path to scan for *YAML* files
+    :return: a generator
+    :raise: :class:`ValueError` if path is not a valid directory
+    """
     if not os.path.isdir(path):
         raise ValueError('{0} not a directory'.format(path))
     for _file in os.listdir(path):
@@ -83,5 +100,13 @@ def yaml_files(path):
 
 
 def flatten(lst):
+    """
+    simple flatten operation for a list of lists
+
+    :param lst: the list of lists
+    :type lst: list
+    :return: the flattened list
+    :rtype: list
+    """
     assert isinstance(lst, list)
     return list(itertools.chain(*lst))

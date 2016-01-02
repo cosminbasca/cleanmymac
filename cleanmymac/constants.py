@@ -16,10 +16,16 @@
 # limitations under the License.
 #
 
+#: the main entry point for externally defined :class:`cleanmymac.target.Target` extensions
 TARGET_ENTRY_POINT = 'cleanmymac.target'
+
+#: the **YAML** constant used to identify targets of type: :class:`cleanmymac.target.ShellCommandTarget`
 TYPE_TARGET_CMD = 'cmd'
+
+#: the **YAML** constant used to identify targets of type: :class:`cleanmymac.target.DirTarget`
 TYPE_TARGET_DIR = 'dir'
 
+#: the **YAML** valid target types
 VALID_TARGET_TYPES = frozenset({
     TYPE_TARGET_DIR,
     TYPE_TARGET_CMD

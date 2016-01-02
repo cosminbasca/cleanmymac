@@ -16,7 +16,8 @@ for a detailed view of the command line interface to **cleanmymac** see :ref:`cl
 
 .. warning::
 
-    This is work in progress. Use of your own risk!
+    This is work in progress and involves deleting files from your system.
+    Use at your own risk!
 
 
 How to:
@@ -26,8 +27,8 @@ How to:
     :maxdepth: 2
 
     install
-    extending
     configuration
+    extending
 
 Api Reference:
 --------------

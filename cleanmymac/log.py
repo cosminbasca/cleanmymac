@@ -18,26 +18,36 @@
 from colorlog import ColoredFormatter
 import logging
 
+#: the main **cleanmymac** logger name
 LOGGER_NAME = 'cleanmymac'
 
 _logger = None
 
+#: log level Disabled
 DISABLED = 100
+#: log level Critical
 CRITICAL = 50
+#: log level Error
 ERROR = 40
+#: log level Warning
 WARNING = 30
+#: log level Info
 INFO = 20
+#: log level Debug
 DEBUG = 10
+#: log level not set
 NOTSET = 0
 
 
 def debug(msg, *args):
     """
-    log debug messages. It uses the __debug__ python special var for speedy processing of
+    log debug messages. It uses the `__debug__` python special var for speedy processing of
     debug messages when debugging is disabled
+
     :param msg: the message + format
+    :type msg: str
     :param args: message arguments
-    :return: nothing
+    :type args: list
     """
     if __debug__:
         if _logger:
@@ -47,9 +57,11 @@ def debug(msg, *args):
 def info(msg, *args):
     """
     log info messages
+
     :param msg: the message + format
+    :type msg: str
     :param args: message arguments
-    :return: nothing
+    :type args: list
     """
     if _logger:
         _logger.log(INFO, msg, *args)
@@ -58,9 +70,11 @@ def info(msg, *args):
 def warn(msg, *args):
     """
     log warning messages
+
     :param msg: the message + format
+    :type msg: str
     :param args: message arguments
-    :return: nothing
+    :type args: list
     """
     if _logger:
         _logger.log(WARNING, msg, *args)
@@ -69,9 +83,11 @@ def warn(msg, *args):
 def error(msg, *args):
     """
     log error messages
+
     :param msg: the message + format
+    :type msg: str
     :param args: message arguments
-    :return: nothing
+    :type args: list
     """
     if _logger:
         _logger.log(ERROR, msg, *args)
@@ -81,9 +97,13 @@ def get_logger(name=LOGGER_NAME, handler=None):
     """
     create a logger
     the method is thread safe
-    :param name: the name of the logger, by default LOGGER_NAME is used
+
+    :param name: the name of the logger, by default :attr:`cleanmymac.log.LOGGER_NAME` is used
+    :type name: str
     :param handler: add a logging handler, if None, a default console handler is created
+    :type handler: :class:`logging.Handler`
     :return: the logger
+    :rtype: :class:`logging.Logger`
     """
     # LOG_FORMAT = '%(asctime)s %(levelname)-8s %(name)-15s %(message)s'
     LOG_FORMAT = '%(levelname)-8s %(message)s'
@@ -114,9 +134,11 @@ def get_logger(name=LOGGER_NAME, handler=None):
 def setup_logger(name=LOGGER_NAME, handler=None):
     """
     set the module global logger object
+
     :param name: the logger name
+    :type name: str
     :param handler: the logger handler, None for console
-    :return: nothing
+    :type handler: :class:`logging.Handler`
     """
     global _logger
     _logger = get_logger(name=name, handler=handler)
@@ -125,7 +147,6 @@ def setup_logger(name=LOGGER_NAME, handler=None):
 def uninstall_logger():
     """
     uninstalls a previously set up logger
-    :return: nothing
     """
     global _logger
     _logger = None
@@ -134,8 +155,9 @@ def uninstall_logger():
 def set_logger(logger):
     """
     install an existing logger as the module global logger
+
     :param logger: the logger
-    :return: nothing
+    :type logger: :class:`logging.Logger`
     """
     global _logger
     if logger:
@@ -146,9 +168,11 @@ def set_logger_level(level, name=None):
     """
     set the logging level for the given logger name
     the method is thread safe
+
     :param level: the level
+    :type level: int
     :param name: the logger name, if name is not found the logging.root logger is configured
-    :return: nothing
+    :type name: str
     """
     logging._acquireLock()
     try:
@@ -162,9 +186,10 @@ def set_logger_level(level, name=None):
 
 def disable_logger(name=None):
     """
-    disable the given logger. This is a convenience method
+    disable the given logger. This is a convenience method.
     the method is thread safe
+
     :param name: the logger name
-    :return: nothing
+    :type name: str
     """
     set_logger_level(DISABLED, name=name)
