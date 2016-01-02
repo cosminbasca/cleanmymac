@@ -127,5 +127,4 @@ def run_cmd():
                         name, ex))
                     if stop_on_error:
                         break
-
-    _log('\ncleanup complete')
+        _log('\ncleanup complete')
