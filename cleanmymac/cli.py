@@ -119,7 +119,6 @@ def run_cmd():
     config = get_options(path=args.config)
     # register extra targets if any
     for pth in _config_targets_path(config):
-        print '>>> ',pth
         register_yaml_targets(pth)
     if targets_path and os.path.isdir(targets_path):
         register_yaml_targets(targets_path)

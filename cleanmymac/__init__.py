@@ -23,3 +23,8 @@ setup_logger()
 # set_logger_level(DEBUG)
 set_logger_level(INFO)
 
+from constants import *
+from __version__ import str_version, version
+from registry import *
+from target import *
+from util import *

@@ -16,9 +16,7 @@
 # limitations under the License.
 #
 from abc import ABCMeta, abstractmethod, abstractproperty
-
 from shutil import rmtree
-
 from cleanmymac.log import info, debug, error, warn
 from cleanmymac.util import flatten
 from sarge import run, shell_format, Capture
@@ -33,8 +31,6 @@ import re
 # the base Target class
 #
 # ----------------------------------------------------------------------------------------
-
-
 class Target(object):
     """
     the main cleanup Target. This is an abstract class.
