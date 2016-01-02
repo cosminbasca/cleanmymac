@@ -101,7 +101,9 @@ def validate_yaml_target(description):
 
 def _config_schema():
     return Schema({
-        Optional('env'): dict,
+        Optional('cleanmymac'): Schema({
+            Optional('targets_path'): list
+        }, extra=ALLOW_EXTRA),
     }, extra=ALLOW_EXTRA)
 
 

@@ -1,3 +1,6 @@
+cleanmymac: {
+  targets_path: ['.']
+}
 anaconda: {
   env: {
     PATH: '~/anaconda/bin',

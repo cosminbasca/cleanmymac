@@ -17,3 +17,11 @@ assume that the *anaconda* :class:`cleanmymac.target.Target` is not in the main 
       },
     }
 
+Also, additional *YAML target paths* can be specified in the global config file:
+
+.. code-block:: yaml
+
+    cleanmymac: {
+      targets_path: ['path1', 'path2', 'path3']
+    }
+

@@ -54,6 +54,13 @@ def get_options(path=None):
     return validate_yaml_config(cfg)
 
 
+def _config_targets_path(config):
+    if 'cleanmymac' in config:
+        if 'targets_path' in config['cleanmymac']:
+            return config['cleanmymac']['targets_path']
+    return []
+
+
 def get_parser():
     """
     creates and returns the parsed used by the command line utility
@@ -111,6 +118,9 @@ def run_cmd():
 
     config = get_options(path=args.config)
     # register extra targets if any
+    for pth in _config_targets_path(config):
+        print '>>> ',pth
+        register_yaml_targets(pth)
     if targets_path and os.path.isdir(targets_path):
         register_yaml_targets(targets_path)
 
