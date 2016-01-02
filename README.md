@@ -29,6 +29,11 @@ a typical usage pattern is:
 $ cleanmymac
 ```
 
+
+# documentation
+
+http://cleanmymac.readthedocs.org/en/latest/
+
 # installation
 clone the repository locally and issue
 
