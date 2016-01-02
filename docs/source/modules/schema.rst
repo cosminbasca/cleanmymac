@@ -1,7 +1,7 @@
-The :mod:`cleanmymac.target` Module
+The :mod:`cleanmymac.schema` Module
 -----------------------------------
 
-.. automodule:: cleanmymac.target
+.. automodule:: cleanmymac.schema
         :members:
         :undoc-members:
         :inherited-members:

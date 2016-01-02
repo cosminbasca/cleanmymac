@@ -37,17 +37,18 @@ import re
 
 class Target(object):
     """
-    the main cleanup Target class
+    the main cleanup Target. This is an abstract class.
+
+    :param config: a configuration dictionary
+    :type config: dict
+    :param update: perform the update before cleanup if True
+    :type update: bool
+    :param verbose: verbose output if True
+    :type verbose: bool
     """
     __metaclass__ = ABCMeta
 
     def __init__(self, config, update=False, verbose=False):
-        """
-        initialize a cleanup target
-        :param config: a configuration dictionary
-        :param update: perform the update before cleanup if True
-        :param verbose: verbose output if True
-        """
         self._config = config if isinstance(config, dict) else {}
         self._update = update
         self._verbose = verbose
@@ -56,6 +57,7 @@ class Target(object):
     def update(self, **kwargs):
         """
         the update operation
+
         :param kwargs: additional arguments
         """
         pass
@@ -64,6 +66,7 @@ class Target(object):
     def clean(self, **kwargs):
         """
         the cleanup operation
+
         :param kwargs: additional arguments
         """
         pass
@@ -72,6 +75,7 @@ class Target(object):
     def describe(self):
         """
         the description of the combined update and clean operations
+
         :return: a string describing the steps to be undertaken
         """
         return ''
@@ -79,6 +83,7 @@ class Target(object):
     def __call__(self, **kwargs):
         """
         initiate the cleanup (and update if enabled) operations
+
         :param kwargs: additional arguments
         """
         if self._update:
@@ -92,6 +97,15 @@ class Target(object):
 #
 # ----------------------------------------------------------------------------------------
 class ShellCommandTarget(Target):
+    """
+    the main cleanup Shell Command Target. This is an abstract class.
+    This class encapsulates the basic logic to execute cleanup operations based on
+    predefined shell commands.
+
+    :param config: a configuration dictionary
+    :param update: perform the update before cleanup if True
+    :param verbose: verbose output if True
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self, config, update=False, verbose=False):

@@ -79,7 +79,6 @@ def run_cmd():
     """
     the main **run** method, responsible for creating the parser and executing the main logic in
     cleanmymac
-    :return: nothing
     """
     parser = get_parser()
     args = parser.parse_args()

@@ -3,17 +3,45 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to cleanmymac's documentation!
-======================================
+Clean My Mac
+============
 
-Contents:
+A simple command line utility designed to clean your mac
+
+.. code-block:: bash
+
+    $ cleanmymac
+
+for a detailed view of the command line interface to **cleanmymac** see :ref:`cli`
+
+.. warning::
+
+    This is work in progress. Use of your own risk!
+
+
+How to:
+-------
+
+.. toctree::
+    :maxdepth: 2
+
+    install
+    extending
+    configuration
+
+Api Reference:
+--------------
 
 .. toctree::
    :maxdepth: 2
 
-   modules/log
    modules/cli
+   modules/constants
+   modules/log
+   modules/registry
+   modules/schema
    modules/target
+   modules/util
 
 
 Indices and tables
