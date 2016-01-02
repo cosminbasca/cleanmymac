@@ -29,6 +29,7 @@ How to:
     install
     configuration
     extending
+    builtins
 
 Api Reference:
 --------------

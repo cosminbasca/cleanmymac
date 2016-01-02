@@ -1,9 +1,10 @@
 Extending **cleanmymac**
 ========================
 
-**cleanmymac** can easily be extended with additional cleanup targets. Either by installing them as
-as python classes registered to the :attr:`cleanmymac.constants.TARGET_ENTRY_POINT` entry-point.
-For example (in setup.py):
+**cleanmymac** can easily be extended with additional cleanup targets. Form complex cases where cleanup is not
+provided by an external program one can extend the base :class:`cleanmymac.target.Target` class and register it
+with the global :attr:`cleanmymac.constants.TARGET_ENTRY_POINT` entry-point.
+Consider for example (in setup.py) the following case:
 
 .. code-block:: python
 
@@ -16,7 +17,7 @@ For example (in setup.py):
     }
 
 
-alternatively directory and shell commands based targets simply create the descriptive **YAML** files and
+In addition, for directory and shell command based targets simply create the associated **YAML** files and
 point **cleanmymac** to the folder where the files reside with the *-t* command line option.
 See more at: :ref:`cli`.
 
