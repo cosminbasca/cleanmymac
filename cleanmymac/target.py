@@ -16,9 +16,8 @@
 # limitations under the License.
 #
 from abc import ABCMeta, abstractmethod, abstractproperty
-from shutil import rmtree
 from cleanmymac.log import info, debug, error, warn
-from cleanmymac.util import flatten
+from cleanmymac.util import delete_dir_content, DirList, Dir, delete_dirs
 from sarge import run, shell_format, Capture
 from natsort import natsorted
 from pprint import pformat
@@ -250,31 +249,37 @@ class DirTarget(Target):
     def _to_remove(self):
         for entry in self.entries:
             _dir = os.path.expanduser(entry['dir'])
-
-            def _match(path):
-                if 'pattern' in entry:
-                    return os.path.isdir(os.path.join(_dir, d)) and \
-                           re.match(entry['pattern'], path)
-                return True
-
-            dirs = [os.path.join(_dir, d) for d in os.listdir(_dir) if _match(d)]
-            dirs = natsorted(dirs, reverse=True)
-            yield dirs[1:]
+            if 'pattern' in entry:
+                _pattern = entry['pattern']
+                dirs = [os.path.join(_dir, d) for d in os.listdir(_dir)
+                        if os.path.isdir(os.path.join(_dir, d)) and re.match(_pattern, d)]
+                dirs = natsorted(dirs, reverse=True)
+                yield DirList(dirs[1:])
+            else:
+                yield Dir(_dir)
 
     def clean(self, **kwargs):
-        to_remove = flatten(list(self._to_remove()))
-        for _dir in to_remove:
-            rmtree(_dir)
+        for entry in self._to_remove():
+            if isinstance(entry, DirList):
+                if self._verbose:
+                    info('delete folders: {0}'.format(pformat(entry.dirs)))
+                delete_dirs(entry)
+            elif isinstance(entry, Dir):
+                if self._verbose:
+                    info('delete folder contents: {0}'.format(entry.path))
+                delete_dir_content(entry)
 
     def describe(self):
         msgs = []
         if self._update and self.update_message:
             msgs.append(self.update_message)
-        to_remove = flatten(list(self._to_remove()))
-        if to_remove:
-            msgs.append('will remove the following folders: {0}'.format(pformat(to_remove)))
-        else:
-            msgs.append('no cleanup action necessary at this point')
+
+        for entry in self._to_remove():
+            if isinstance(entry, DirList) and entry.dirs:
+                msgs.append('delete folders: {0}'.format(pformat(entry.dirs)))
+            elif isinstance(entry, Dir):
+                msgs.append('delete folder contents: {0}'.format(entry.path))
+
         return '\n'.join(msgs)
 
     @abstractproperty
