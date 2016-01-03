@@ -38,7 +38,7 @@ keep the latest 1.7 and 1.8 JDK's under */Library/Java/JavaVirtualMachines*
     may require sudo privileges
 
 
-TexLive
+MacTex
 -------
 
 keep the latest texlive distribution under */usr/local/texlive/*

@@ -1,0 +1,8 @@
+type: 'dir'
+spec: {
+    entries: [
+        {
+            dir: '~/.Trash'
+        },
+    ]
+}

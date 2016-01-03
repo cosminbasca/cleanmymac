@@ -193,16 +193,16 @@ class YamlShellCommandTarget(ShellCommandTarget):
     :type verbose: bool
     """
     def __init__(self, config, update=False, verbose=False):
-        self._args = config['args']
+        self._spec = config['spec']
         super(YamlShellCommandTarget, self).__init__(config, update=update, verbose=verbose)
 
     @property
     def update_commands(self):
-        return self._args['update_commands']
+        return self._spec['update_commands']
 
     @property
     def clean_commands(self):
-        return self._args['clean_commands']
+        return self._spec['clean_commands']
 
 
 # ----------------------------------------------------------------------------------------
@@ -214,7 +214,12 @@ class DirTarget(Target):
     """
     Class encapsulating the logic to execute directory based cleanup operations. The main operation
     consists of identifying and removing all matching directories in a given path with the exception
-    of the most recent version. This is an abstract class.
+    of the most recent version.
+    This is an abstract class.
+
+    .. warning::
+
+        if `pattern` is not specified: all files and folders in `dir` will be removed
 
     :param config: a configuration dictionary
     :type config: dict
@@ -228,15 +233,31 @@ class DirTarget(Target):
     def __init__(self, config, update=False, verbose=False):
         super(DirTarget, self).__init__(config, update=update, verbose=verbose)
 
+    @property
+    def update_message(self):
+        """
+        message to be displayed during the update operation
+
+        :return: the message
+        :rtype: str
+        """
+        return 'update not supported for "dir" targets'
+
     def update(self, **kwargs):
-        info('update not supported for "dir" targets')
+        if self._verbose and self.update_message:
+            info(self.update_message)
 
     def _to_remove(self):
         for entry in self.entries:
-            _dir = entry['dir']
-            _pattern = entry['pattern']
-            dirs = [os.path.join(_dir, d) for d in os.listdir(_dir)
-                    if os.path.isdir(os.path.join(_dir, d)) and re.match(_pattern, d)]
+            _dir = os.path.expanduser(entry['dir'])
+
+            def _match(path):
+                if 'pattern' in entry:
+                    return os.path.isdir(os.path.join(_dir, d)) and \
+                           re.match(entry['pattern'], path)
+                return True
+
+            dirs = [os.path.join(_dir, d) for d in os.listdir(_dir) if _match(d)]
             dirs = natsorted(dirs, reverse=True)
             yield dirs[1:]
 
@@ -247,8 +268,8 @@ class DirTarget(Target):
 
     def describe(self):
         msgs = []
-        if self._update:
-            msgs.append('update not supported for "dir" targets')
+        if self._update and self.update_message:
+            msgs.append(self.update_message)
         to_remove = flatten(list(self._to_remove()))
         if to_remove:
             msgs.append('will remove the following folders: {0}'.format(pformat(to_remove)))
@@ -287,9 +308,13 @@ class YamlDirTarget(DirTarget):
     :type verbose: bool
     """
     def __init__(self, config, update=False, verbose=False):
-        self._args = config['args']
+        self._spec = config['spec']
         super(YamlDirTarget, self).__init__(config, update=update, verbose=verbose)
 
     @property
     def entries(self):
-        return self._args
+        return self._spec['entries']
+
+    @property
+    def update_message(self):
+        return self._spec['update_message'] if 'update_message' in self._spec else ''

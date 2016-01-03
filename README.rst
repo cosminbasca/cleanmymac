@@ -17,7 +17,7 @@ usage
     usage: cleanmymac [-h] [-u] [-d] [-q] [-l] [-s] [-c CONFIG] [-t TARGETS_PATH]
                       [TARGETS [TARGETS ...]]
 
-    cleanmymac v0.1.5, a simple utility designed to help clean your mac from
+    cleanmymac v0.1.8, a simple utility designed to help clean your mac from
     old/unwanted stuff
 
     positional arguments:
@@ -46,11 +46,17 @@ a typical usage pattern is:
 installation
 ============
 
+install from pypi:
+
+.. code-block:: bash
+
+    $ pip install cleanmymac
+
 clone the repository locally and issue
 
 .. code:: bash
 
-    python setup.py install
+    $ python setup.py install
 
 configuration
 =============
@@ -65,6 +71,9 @@ path:
 
 .. code:: yaml
 
+    cleanmymac: {
+      targets_path: ['.']
+    }
     anaconda: {
       env: {
         PATH: '~/anaconda/bin',
@@ -94,7 +103,7 @@ following schema:
 .. code:: yaml
 
     type: 'cmd'
-    args: {
+    spec: {
       update_commands: [
         'brew update',
         'brew outdated | brew upgrade'
@@ -109,10 +118,15 @@ or for cleaning up directories (removing all but the latest version):
 .. code:: yaml
 
     type: 'dir'
-    args: [
-      { dir: '/usr/local/texlive/',
-      pattern: '\d+' },
-    ]
+    spec: {
+        update_message: 'Get the latest MacTex version from https://www.tug.org/mactex/',
+        entries: [
+            {
+                dir: '/usr/local/texlive/',
+                pattern: '\d+'
+            },
+        ]
+    }
 
 **note**: see the *cleanmymac.builtins* module for more details
 
@@ -131,8 +145,9 @@ to see a list of builtin targets run:
 currently the following are supported:
     * homebrew
     * java jdk
-    * texlive
+    * mactex
     * anaconda
+    * trash
 
 disclaimer
 ==========

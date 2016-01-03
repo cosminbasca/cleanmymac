@@ -1,11 +1,18 @@
 type: 'dir'
-args: [
-  {
-    dir: '/Library/Java/JavaVirtualMachines',
-    pattern: 'jdk1\.7\.\d_\d+\.jdk'
-  },
-  {
-    dir: '/Library/Java/JavaVirtualMachines',
-    pattern: 'jdk1\.8\.\d_\d+\.jdk'
-  },
-]
+spec: {
+    update_message: 'Get the latest Java version from http://www.oracle.com/technetwork/java/javase/downloads/index.html',
+    entries: [
+        {
+            dir: '/Library/Java/JavaVirtualMachines',
+            pattern: 'jdk1\.6\.\d_\d+\.jdk'
+        },
+        {
+            dir: '/Library/Java/JavaVirtualMachines',
+            pattern: 'jdk1\.7\.\d_\d+\.jdk'
+        },
+        {
+            dir: '/Library/Java/JavaVirtualMachines',
+            pattern: 'jdk1\.8\.\d_\d+\.jdk'
+        },
+    ]
+}

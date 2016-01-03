@@ -65,7 +65,7 @@ def load_target(yaml_file, config, update=False, verbose=False):
 
         if not config:
             config = {}
-        config['args'] = description['args']
+        config['spec'] = description['spec']
         return target_class(config, update=update, verbose=verbose)
 
 

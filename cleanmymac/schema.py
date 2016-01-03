@@ -15,37 +15,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
 
-from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA, Any, IsDir, In, Or
+from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA, Any, IsDir, In, Or, message, DirInvalid, truth
 
 from cleanmymac.constants import VALID_TARGET_TYPES
 
 
-def _args_cmd_schema():
+@message('not a directory', cls=DirInvalid)
+@truth
+def IsDirUserExpand(v):
+    """Verify the directory exists.
+
+    >>> IsDirUserExpand()('/')
+    '/'
+    """
+    return os.path.isdir(os.path.expanduser(v))
+
+
+def _cmd_spec_schema():
     return Schema({
         Required('update_commands', default=[]): All(list),
         Required('clean_commands'): All(list),
     })
 
 
-def _args_dir_schema():
-    return Schema([
-        {
-            Required('dir'): IsDir(),
-            Required('pattern'): str
-        }
-    ])
+def _dir_spec_schema():
+    return Schema({
+        Optional('update_message'): str,
+        Required('entries'): [
+            {
+                Required('dir'): IsDirUserExpand(),
+                Optional('pattern'): str
+            }
+        ]
+    })
+
 
 __TYPE_SCHEMA__ = {
-    'cmd': _args_cmd_schema(),
-    'dir': _args_dir_schema()
+    'cmd': _cmd_spec_schema(),
+    'dir': _dir_spec_schema()
 }
 
 
 def _target_schema():
     return Schema({
         Required('type'): All(str, In(VALID_TARGET_TYPES)),
-        Required('args'): Or(list, dict)
+        Required('spec'): dict
     })
 
 
@@ -59,7 +75,7 @@ def validate_yaml_target(description):
     .. code-block:: yaml
 
         type: 'cmd'
-        args: {
+        spec: {
           update_commands: [
             'conda update conda',
             'conda update anaconda'
@@ -75,16 +91,23 @@ def validate_yaml_target(description):
     .. code-block:: yaml
 
         type: 'dir'
-        args: [
-          {
-            dir: '/Library/Java/JavaVirtualMachines',
-            pattern: 'jdk1\.7\.\d_\d+\.jdk'
-          },
-          {
-            dir: '/Library/Java/JavaVirtualMachines',
-            pattern: 'jdk1\.8\.\d_\d+\.jdk'
-          },
-        ]
+        spec: {
+            update_message: 'Get the latest Java version from http://www.oracle.com/technetwork/java/javase/downloads/index.html',
+            entries: [
+                {
+                    dir: '/Library/Java/JavaVirtualMachines',
+                    pattern: 'jdk1\.6\.\d_\d+\.jdk'
+                },
+                {
+                    dir: '/Library/Java/JavaVirtualMachines',
+                    pattern: 'jdk1\.7\.\d_\d+\.jdk'
+                },
+                {
+                    dir: '/Library/Java/JavaVirtualMachines',
+                    pattern: 'jdk1\.8\.\d_\d+\.jdk'
+                },
+            ]
+        }
 
     :param dict description: the loaded description
     :return: the validate description
@@ -94,8 +117,8 @@ def validate_yaml_target(description):
     schema = _target_schema()
     description = schema(description)
     _type = description['type']
-    _args = description['args']
-    description['args'] = __TYPE_SCHEMA__[_type](_args)
+    _spec = description['spec']
+    description['spec'] = __TYPE_SCHEMA__[_type](_spec)
     return description
 
 
@@ -115,6 +138,9 @@ def validate_yaml_config(config):
 
     .. code-block:: yaml
 
+        cleanmymac: {
+          targets_path: ['.']
+        }
         anaconda: {
           env: {
             PATH: '~/anaconda/bin',

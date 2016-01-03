@@ -154,5 +154,5 @@ def run_cmd():
 
         free_space_after = get_disk_usage('/', unit=UNIT_MB).free
         if not dry_run:
-            _log('cleanup complete')
+            _log('\ncleanup complete')
             _log('freed {0:.3f} MB of disk space'.format(free_space_after-free_space_before))

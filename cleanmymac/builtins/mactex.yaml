@@ -1,0 +1,10 @@
+type: 'dir'
+spec: {
+    update_message: 'Get the latest MacTex version from https://www.tug.org/mactex/',
+    entries: [
+        {
+            dir: '/usr/local/texlive/',
+            pattern: '\d+'
+        },
+    ]
+}
