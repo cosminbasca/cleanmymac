@@ -47,7 +47,7 @@ setup(
     version=str_version,
     author='Cosmin Basca',
     author_email='cosmin.basca@gmail.com',
-    # url=None,
+    url='https://github.com/cosminbasca/cleanmymac',
     description='a simple utility to clean your mac of old stuff',
     long_description=DESCRIPTION,
     classifiers=[
