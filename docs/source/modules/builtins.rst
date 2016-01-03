@@ -1,11 +1,11 @@
-Builtin cleanup Targets
-=======================
+The :mod:`cleanmymac.builtins` Module
+-------------------------------------
 
 **cleanmymac** comes with a few builtin cleanup targets defined as **YAML**
 files in the :mod:`cleanmymac.builtins` module.
 
 Homebrew
---------
+========
 
 .. code-block:: bash
 
@@ -17,7 +17,7 @@ Homebrew
 
 
 Anaconda
---------
+========
 
 .. code-block:: bash
 
@@ -29,7 +29,7 @@ Anaconda
 
 
 Java JDK's
-----------
+==========
 
 keep the latest 1.7 and 1.8 JDK's under */Library/Java/JavaVirtualMachines*
 
@@ -39,7 +39,7 @@ keep the latest 1.7 and 1.8 JDK's under */Library/Java/JavaVirtualMachines*
 
 
 MacTex
--------
+======
 
 keep the latest texlive distribution under */usr/local/texlive/*
 
@@ -47,3 +47,8 @@ keep the latest texlive distribution under */usr/local/texlive/*
 
     may require sudo privileges
 
+
+Trash
+=====
+
+simply empty the contents of the *~/.Trash/* (trash bin) folder

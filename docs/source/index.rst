@@ -29,7 +29,6 @@ How to:
     install
     configuration
     extending
-    builtins
 
 Api Reference:
 --------------
@@ -37,6 +36,7 @@ Api Reference:
 .. toctree::
    :maxdepth: 2
 
+   modules/builtins
    modules/cli
    modules/constants
    modules/log
