@@ -56,7 +56,7 @@ setup(
         'Natural Language :: English',
         'Operating System :: MacOS',
         'Programming Language :: Python',
-        'Programming Language :: Yaml',
+        'Topic :: Text Processing :: Markup',
         'Topic :: Utilities',
     ],
     packages=[
