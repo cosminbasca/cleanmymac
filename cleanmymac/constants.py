@@ -30,3 +30,12 @@ VALID_TARGET_TYPES = frozenset({
     TYPE_TARGET_DIR,
     TYPE_TARGET_CMD
 })
+
+#: 1 kilobyte
+UNIT_KB = 1024
+
+#: 1 megabyte
+UNIT_MB = UNIT_KB * 1024
+
+#: 1 gigabyte
+UNIT_GB = UNIT_MB * 1024

@@ -22,5 +22,5 @@ __author__ = 'basca'
 
 VersionSpec = namedtuple('VersionSpec', ['major', 'minor', 'revision'])
 
-version = VersionSpec(0, 1, 6)
+version = VersionSpec(0, 1, 7)
 str_version = '.'.join(map(str, version))

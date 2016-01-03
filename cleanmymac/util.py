@@ -18,6 +18,8 @@
 import os
 import sys
 import itertools
+from collections import namedtuple
+from cleanmymac.constants import UNIT_KB, UNIT_MB, UNIT_GB
 
 
 def exists(cmd, mode=os.F_OK | os.X_OK, path=None):
@@ -110,3 +112,25 @@ def flatten(lst):
     """
     assert isinstance(lst, list)
     return list(itertools.chain(*lst))
+
+
+#: a :func:`collections.namedtuple` holding disk usage statistics
+DiskUsage = namedtuple('DiskUsage', ['total', 'used', 'free'])
+
+
+def get_disk_usage(path='/', unit=UNIT_KB):
+    """
+    retrieve disk usage statistics for a given path
+    this function was inspired by the following *stackoverflow* discussion:
+    http://stackoverflow.com/questions/787776/find-free-disk-space-in-python-on-os-x
+
+    :param str path: the path (defaults to **/**)
+    :param long unit: the measurement unit
+    :return: the usage statistics
+    :rtype: DiskUsage
+    """
+    stats = os.statvfs(path)
+    free = stats.f_bavail * stats.f_frsize
+    total = stats.f_blocks * stats.f_frsize
+    used = (stats.f_blocks - stats.f_bfree) * stats.f_frsize
+    return DiskUsage(float(total) / unit, float(used) / unit, float(free) / unit)

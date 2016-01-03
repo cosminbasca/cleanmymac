@@ -23,6 +23,8 @@ from cleanmymac.log import info, warn, error, debug
 from cleanmymac.registry import iter_targets, register_yaml_targets
 from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
+from cleanmymac.util import get_disk_usage
+from cleanmymac.constants import UNIT_KB, UNIT_MB
 from tqdm import tqdm
 from yaml import load
 import os
@@ -127,6 +129,7 @@ def run_cmd():
         for name, target_initializer in targets_iterator:
             warn(' > {0}'.format(name))
     else:
+        free_space_before = get_disk_usage('/', unit=UNIT_MB).free
         for name, target_initializer in targets_iterator:
             if name not in targets_to_execute:
                 continue
@@ -148,4 +151,8 @@ def run_cmd():
                         name, ex))
                     if stop_on_error:
                         break
-        _log('\ncleanup complete')
+
+        free_space_after = get_disk_usage('/', unit=UNIT_MB).free
+        if not dry_run:
+            _log('cleanup complete')
+            _log('freed {0:.3f} MB of disk space'.format(free_space_after-free_space_before))
