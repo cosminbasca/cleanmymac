@@ -51,6 +51,7 @@ setup(
     description='A simple utility to clean your mac of old stuff',
     long_description=DESCRIPTION,
     classifiers=[
+        'Development Status :: 4 - Beta',
         'Intended Audience :: End Users/Desktop',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
