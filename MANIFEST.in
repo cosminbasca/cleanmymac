@@ -2,4 +2,4 @@ recursive-exclude build *
 recursive-exclude dist *
 exclude *.sh
 include LICENSE
-include README.md
+include README.rst
