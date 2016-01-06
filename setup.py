@@ -60,6 +60,8 @@ setup(
         'Topic :: Text Processing :: Markup',
         'Topic :: Utilities',
     ],
+    platforms=['MacOS'],
+    license='Apache',
     packages=[
         NAME,
         '{0}/builtins'.format(NAME),
