@@ -86,6 +86,8 @@ def get_parser():
                         help='stop execution when first error is detected')
     parser.add_argument('-c', '--config', action='store', default=None,
                         help='specify the configuration path')
+    parser.add_argument('-v', '--version', action='store_true',
+                        help='display the version number')
     parser.add_argument('-t', '--targets_path', action='store', default=None,
                         help='specify extra yaml defined targets path')
     return parser
@@ -98,6 +100,11 @@ def run_cmd():
     """
     parser = get_parser()
     args = parser.parse_args()
+
+    if args.version:
+        info(str_version)
+        return
+
     targets = dict(iter_targets())
 
     update = args.update
