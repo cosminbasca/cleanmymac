@@ -1,7 +1,7 @@
 cleanmymac
 ==========
 
-A simple command line tool to clean old stuff from your mac
+A simple command line tool to clean old stuff from your mac.
 
 documentation
 =============
