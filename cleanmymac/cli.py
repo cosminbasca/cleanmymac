@@ -18,16 +18,18 @@
 #
 
 import click
+import click_log
+import os
+from tqdm import tqdm
+from yaml import load
+
 from cleanmymac.__version__ import str_version
-from cleanmymac.log import info, warn, error, debug
+from cleanmymac.log import info, warn, error, debug, echo_warn
 from cleanmymac.registry import iter_targets, register_yaml_targets
 from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
 from cleanmymac.util import get_disk_usage
 from cleanmymac.constants import UNIT_KB, UNIT_MB
-from tqdm import tqdm
-from yaml import load
-import os
 
 __author__ = 'cosmin'
 
@@ -64,6 +66,7 @@ def _config_targets_path(config):
 
 
 @click.command(name='cleanmymac')
+@click_log.init()
 @click.option('-u', '--update', is_flag=True, help='update the target if applicable')
 @click.option('-d', '--dry_run', is_flag=True, help='describe the actions to be performed, do not execute them')
 @click.option('-q', '--quiet', is_flag=True, help='run in quiet mode')
@@ -115,7 +118,7 @@ def cli(ctx, update, dry_run, quiet, list_targets, stop_on_error, config, target
 
     if list_targets:
         for name, target_initializer in targets_iterator:
-            warn(' > {0}'.format(name))
+            echo_warn(' > {0}'.format(name))
     else:
         free_space_before = get_disk_usage('/', unit=UNIT_MB).free
         for name, target_initializer in targets_iterator:
