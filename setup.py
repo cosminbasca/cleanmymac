@@ -40,6 +40,8 @@ pip_deps = [
     'voluptuous>=0.8.8',
     'colorlog>=2.6.0',
     'natsort>=4.0.4',
+    'click>=6.2',
+    'click-log>=0.1.3',
 ]
 
 setup(
@@ -72,7 +74,7 @@ setup(
     install_requires=pip_deps,
     entry_points={
         'console_scripts': [
-            'cleanmymac = cleanmymac.cli:run_cmd'
+            'cleanmymac = cleanmymac.cli:cli'
         ]
     }
 )

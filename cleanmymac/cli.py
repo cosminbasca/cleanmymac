@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-import argparse
+import click
 from cleanmymac.__version__ import str_version
 from cleanmymac.log import info, warn, error, debug
 from cleanmymac.registry import iter_targets, register_yaml_targets
@@ -63,69 +63,50 @@ def _config_targets_path(config):
     return []
 
 
-def get_parser():
-    """
-    creates and returns the parsed used by the command line utility
-
-    :return: the command line parser
-    :rtype: :class:`argparse.ArgumentParser`
-    """
-    parser = argparse.ArgumentParser(description='cleanmymac v{0}, a simple utility designed to help clean your mac '
-                                                 'from old/unwanted stuff'.format(str_version))
-    parser.add_argument('targets', metavar='TARGETS', type=str, nargs='*',
-                        help='the list of targets to execute. Execute all if not specified.')
-    parser.add_argument('-u', '--update', action='store_true',
-                        help='update the target if applicable')
-    parser.add_argument('-d', '--dry_run', action='store_true',
-                        help='describe the actions to be performed, do not execute them')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='run in quiet mode')
-    parser.add_argument('-l', '--list', action='store_true',
-                        help='list registered cleanup targets')
-    parser.add_argument('-s', '--stop_on_error', action='store_true',
-                        help='stop execution when first error is detected')
-    parser.add_argument('-c', '--config', action='store', default=None,
-                        help='specify the configuration path')
-    parser.add_argument('-v', '--version', action='store_true',
-                        help='display the version number')
-    parser.add_argument('-t', '--targets_path', action='store', default=None,
-                        help='specify extra yaml defined targets path')
-    return parser
-
-
-def run_cmd():
+@click.command(name='cleanmymac')
+@click.option('-u', '--update', is_flag=True, help='update the target if applicable')
+@click.option('-d', '--dry_run', is_flag=True, help='describe the actions to be performed, do not execute them')
+@click.option('-q', '--quiet', is_flag=True, help='run in quiet mode')
+@click.option('-l', '--list', 'list_targets', is_flag=True, help='list registered cleanup targets')
+@click.option('-s', '--stop_on_error', is_flag=True, help='stop execution when first error is detected')
+@click.option('-c', '--config', default=None, envvar='CLEANMYMAC_CONFIG', help='specify the configuration path')
+@click.option('-t', '--targets_path', default=None, type=click.Path(exists=True), multiple=True,
+              help='specify extra yaml defined targets path')
+@click.version_option(version=str_version)
+@click.argument('targets', metavar='TARGETS', type=str, nargs=-1)
+@click.pass_context
+def cli(ctx, update, dry_run, quiet, list_targets, stop_on_error, config, targets_path, targets, **kwargs):
     """
     the main **run** method, responsible for creating the parser and executing the main logic in
     **cleanmymac**
+
+    :param ctx:  the click context
+    :type ctx: :class:`click.Context`
+    :param bool update: perform update of targets (if aplicable)
+    :param dry_run: do not execute the actions, but log the result
+    :param quiet: quiet mode (no output), show a progressbar instead
+    :param list_targets: list the installed targets
+    :param stop_on_error: abort the execution on first error
+    :param config: the configuration path
+    :param targets_path: extra targets paths
+    :param targets: the targets
     """
-    parser = get_parser()
-    args = parser.parse_args()
+    all_targets = dict(iter_targets())
 
-    if args.version:
-        info(str_version)
-        return
-
-    targets = dict(iter_targets())
-
-    update = args.update
-    verbose = not args.quiet
-    dry_run = args.dry_run
-    targets_path = args.targets_path
-    stop_on_error = args.stop_on_error
-    list_targets = args.list
-    if args.targets:
-        targets_to_execute = set(args.targets)
+    verbose = not quiet
+    if targets:
+        targets_to_execute = set(targets)
     else:
-        targets_to_execute = set(targets.keys())
+        targets_to_execute = set(all_targets.keys())
 
-    targets_iterator = targets.iteritems() if verbose else tqdm(targets.iteritems())
+    targets_iterator = all_targets.iteritems() if verbose else tqdm(all_targets.iteritems())
 
     _log = info if verbose else debug
     _describe = warn if verbose else debug
 
-    _log('found {0} registered cleanup targets'.format(len(targets)))
+    _log('found {0} registered cleanup targets'.format(len(all_targets)))
 
-    config = get_options(path=args.config)
+    config = get_options(path=config)
     # register extra targets if any
     for pth in _config_targets_path(config):
         register_yaml_targets(pth)
