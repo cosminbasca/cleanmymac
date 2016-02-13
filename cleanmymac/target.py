@@ -16,7 +16,7 @@
 # limitations under the License.
 #
 from abc import ABCMeta, abstractmethod, abstractproperty
-from cleanmymac.log import info, debug, error, warn
+from cleanmymac.log import info, debug, error, warn, echo_info, echo_warn, echo_success
 from cleanmymac.util import delete_dir_content, DirList, Dir, delete_dirs
 from sarge import run, shell_format, Capture
 from natsort import natsorted
@@ -145,9 +145,9 @@ class ShellCommandTarget(Target):
                 if self._verbose:
                     with Capture() as err:
                         with Capture() as out:
-                            info('running: {0}'.format(cmd))
+                            echo_success('running: {0}'.format(cmd))
                             run(cmd, stdout=out, stderr=err, env=self._env)
-                            info(out.text)
+                            echo_info(out.text)
                             warn(err.text)
                 else:
                     with Capture() as err:
@@ -244,7 +244,7 @@ class DirTarget(Target):
 
     def update(self, **kwargs):
         if self._verbose and self.update_message:
-            info(self.update_message)
+            echo_info(self.update_message)
 
     def _to_remove(self):
         for entry in self.entries:
@@ -262,11 +262,11 @@ class DirTarget(Target):
         for entry in self._to_remove():
             if isinstance(entry, DirList):
                 if self._verbose:
-                    info('delete folders: {0}'.format(pformat(entry.dirs)))
+                    echo_warn('delete folders: {0}'.format(pformat(entry.dirs)))
                 delete_dirs(entry)
             elif isinstance(entry, Dir):
                 if self._verbose:
-                    info('delete folder contents: {0}'.format(entry.path))
+                    echo_warn('delete folder contents: {0}'.format(entry.path))
                 delete_dir_content(entry)
 
     def describe(self):
