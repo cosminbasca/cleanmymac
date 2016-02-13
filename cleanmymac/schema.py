@@ -19,6 +19,7 @@ import os
 
 from voluptuous import Schema, Required, All, Optional, ALLOW_EXTRA, Any, IsDir, In, Or, message, DirInvalid, truth
 
+from cleanmymac.log import error
 from cleanmymac.constants import VALID_TARGET_TYPES
 
 
@@ -33,19 +34,19 @@ def IsDirUserExpand(v):
     return os.path.isdir(os.path.expanduser(v))
 
 
-def _cmd_spec_schema():
+def _cmd_spec_schema(strict=True):
     return Schema({
         Required('update_commands', default=[]): All(list),
         Required('clean_commands'): All(list),
     })
 
 
-def _dir_spec_schema():
+def _dir_spec_schema(strict=True):
     return Schema({
         Optional('update_message'): str,
         Required('entries'): [
             {
-                Required('dir'): IsDirUserExpand(),
+                Required('dir'): IsDirUserExpand() if strict else str,
                 Optional('pattern'): str
             }
         ]
@@ -53,8 +54,8 @@ def _dir_spec_schema():
 
 
 __TYPE_SCHEMA__ = {
-    'cmd': _cmd_spec_schema(),
-    'dir': _dir_spec_schema()
+    'cmd': _cmd_spec_schema,
+    'dir': _dir_spec_schema
 }
 
 
@@ -65,7 +66,7 @@ def _target_schema():
     })
 
 
-def validate_yaml_target(description):
+def validate_yaml_target(description, strict=True):
     """
     performs the validation of the **YAML** definition of a :class:`cleanmymac.target.Target`.
     Currently two kinds of schemas are supported.
@@ -110,6 +111,7 @@ def validate_yaml_target(description):
         }
 
     :param dict description: the loaded description
+    :param bool strict: perform strict validation (fail on invalid specification if True)
     :return: the validate description
     :rtype: dict
     """
@@ -118,7 +120,13 @@ def validate_yaml_target(description):
     description = schema(description)
     _type = description['type']
     _spec = description['spec']
-    description['spec'] = __TYPE_SCHEMA__[_type](_spec)
+    try:
+        schema = __TYPE_SCHEMA__[_type](strict=strict)
+        description['spec'] = schema(_spec)
+    except Exception, e:
+        error(e)
+        if strict:
+            raise e
     return description
 
 

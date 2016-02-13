@@ -68,6 +68,7 @@ setup(
         'natsort>=4.0.4',
         'click>=6.2',
         'click-log>=0.1.3',
+        'tabulate>=0.7.5',
     ],
     entry_points={
         'console_scripts': [

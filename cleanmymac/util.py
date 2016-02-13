@@ -16,10 +16,13 @@
 # limitations under the License.
 #
 import os
+import shutil
+import click
+from contextlib import contextmanager
 from collections import namedtuple
+
 from cleanmymac.log import error
 from cleanmymac.constants import UNIT_KB, UNIT_MB, UNIT_GB
-import shutil
 
 
 def yaml_files(path):
@@ -94,3 +97,25 @@ def delete_dirs(dir_list):
     for d in dir_list.dirs:
         if os.path.isdir(d):
             shutil.rmtree(d)
+
+
+@contextmanager
+def progressbar(verbose, iterable, **kwargs):
+    """
+    wrapper over the :func:`click.progressbar` context manager
+
+    :param bool verbose: if False use the :func:`click.progressbar`, else return `iterable`
+    :param iterable iterable: the iterable object
+    :param dict kwargs: extra arguments for :func:`click.progressbar`
+    :return: an iterator
+    :rtype: iterable
+    """
+    if verbose:
+        yield iterable
+    else:
+        #: default template '%(label)s  [%(bar)s]  %(info)s'
+        kwargs['bar_template'] = '%(label)s  [{0}]  {1}'.format(
+            click.style('%(bar)s', fg='blue'),
+            click.style('%(info)s', fg='yellow'))
+        with click.progressbar(iterable, **kwargs) as bar:
+            yield bar

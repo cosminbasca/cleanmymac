@@ -12,6 +12,8 @@ A simple command line utility designed to clean your mac
 
     $ cleanmymac
 
+.. program-output:: cleanmymac --version
+
 for a detailed view of the command line interface to **cleanmymac** see :ref:`cli`
 
 .. warning::

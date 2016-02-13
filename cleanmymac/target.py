@@ -48,6 +48,10 @@ class Target(object):
         self._update = update
         self._verbose = verbose
 
+    @property
+    def config(self):
+        return self._config
+
     @abstractmethod
     def update(self, **kwargs):
         """

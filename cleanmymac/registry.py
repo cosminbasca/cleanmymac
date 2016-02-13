@@ -15,16 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
+from tabulate import tabulate
+from yaml import load
+from functools import partial
+from pkg_resources import iter_entry_points
+from cleanmymac.util import yaml_files
+
 from cleanmymac.builtins import BUILTINS_PATH
 from cleanmymac.log import debug, error
 from cleanmymac.constants import TARGET_ENTRY_POINT, VALID_TARGET_TYPES, TYPE_TARGET_CMD, TYPE_TARGET_DIR
 from cleanmymac.schema import validate_yaml_target
 from cleanmymac.target import Target, YamlShellCommandTarget, YamlDirTarget
-from pkg_resources import iter_entry_points
-from cleanmymac.util import yaml_files
-from functools import partial
-from yaml import load
-import os
 
 
 __TARGETS__ = {}
@@ -34,7 +36,7 @@ __YAML_TYPES__ = {
 }
 
 
-def load_target(yaml_file, config, update=False, verbose=False):
+def load_target(yaml_file, config, update=False, verbose=False, strict=True):
     """
     load a target given its description from a **YAML** file.
     The file is validated according to its type before loading.
@@ -48,7 +50,7 @@ def load_target(yaml_file, config, update=False, verbose=False):
     """
     with open(yaml_file, 'r+') as DESC:
         description = load(DESC)
-        description = validate_yaml_target(description)
+        description = validate_yaml_target(description, strict=strict)
         _type = description['type']
         if _type not in VALID_TARGET_TYPES:
             error('unknown yaml target type: "{0}", valid options are: {1}'.format(
@@ -123,6 +125,19 @@ def iter_targets():
     global __TARGETS__
     for name, target in __TARGETS__.iteritems():
         yield name, target
+
+
+def get_targets_as_table(simple=True, fancy=False):
+    headers = ['Name', 'Type']
+
+    def row(name, target):
+        data = [name.upper()]
+        t = target(None, False, False)
+        data.append(t.__class__.__name__ if simple else t.__class__)
+        return data
+
+    return tabulate([row(name, target) for name, target in __TARGETS__.iteritems()],
+                    headers=headers, tablefmt='fancy_grid' if fancy else 'orgtbl')
 
 
 # register built in targets
