@@ -14,34 +14,47 @@ usage
 .. code:: bash
 
     $ cleanmymac -h
-    usage: cleanmymac [-h] [-u] [-d] [-q] [-l] [-s] [-c CONFIG] [-t TARGETS_PATH]
-                      [TARGETS [TARGETS ...]]
+    Usage: cleanmymac [OPTIONS] TARGETS
 
-    cleanmymac v0.1.8, a simple utility designed to help clean your mac from
-    old/unwanted stuff
+      the main **run** method, responsible for creating the parser and executing
+      the main logic in **cleanmymac**
 
-    positional arguments:
-      TARGETS               the list of targets to execute. Execute all if not
-                            specified.
+      :param bool update: perform update of targets (if applicable) :param
+          dry_run: do not execute the actions, but log the result :param quiet:
+          quiet mode (no output), show a progressbar instead :param strict: if set
+          enforce strict(er) rules when validating targets :param list_targets: list
+          the installed targets :param stop_on_error: abort the execution on first
+          error :param config: the configuration path :param targets_path: extra
+          targets paths :param targets: the targets
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -u, --update          update the target if applicable
-      -d, --dry_run         describe the actions to be performed, do not execute
-                            them
-      -q, --quiet           run in quiet mode
-      -l, --list            list registered cleanup targets
-      -s, --stop_on_error   stop execution when first error is detected
-      -c CONFIG, --config CONFIG
-                            specify the configuration path
-      -t TARGETS_PATH, --targets_path TARGETS_PATH
-                            specify extra yaml defined targets path
+        Options:
+          -L, --log-level LVL      Either CRITICAL, ERROR, WARNING, INFO or DEBUG
+          -u, --update             update the target if applicable
+          -d, --dry_run            describe the actions to be performed, do not
+                                   execute them
+          -q, --quiet              run in quiet mode
+          --strict / --no-strict   strict mode: enforce strict(er) rules when
+                                   validating targets
+          -l, --list               list registered cleanup targets
+          -s, --stop_on_error      stop execution when first error is detected
+          -c, --config TEXT        specify the configuration path
+          -t, --targets_path PATH  specify extra yaml defined targets path
+          --version                Show the version and exit.
+          -?, -h, --help           Show this message and exit.
+
 
 a typical usage pattern is:
 
 .. code:: bash
 
     $ cleanmymac
+
+or (in quiet mode)
+
+.. code:: bash
+
+    $ cleanmymac -q
+
 
 installation
 ============
