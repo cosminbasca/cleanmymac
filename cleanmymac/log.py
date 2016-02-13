@@ -24,21 +24,6 @@ LOGGER_NAME = 'cleanmymac'
 _logger = logging.getLogger(LOGGER_NAME)
 _logger.setLevel(logging.CRITICAL)
 
-#: log level Disabled
-DISABLED = 100
-#: log level Critical
-CRITICAL = 50
-#: log level Error
-ERROR = 40
-#: log level Warning
-WARNING = 30
-#: log level Info
-INFO = 20
-#: log level Debug
-DEBUG = 10
-#: log level not set
-NOTSET = 0
-
 
 def debug(msg, *args):
     """
@@ -52,7 +37,7 @@ def debug(msg, *args):
     """
     if __debug__:
         if _logger:
-            _logger.log(DEBUG, msg, *args)
+            _logger.debug(msg, *args)
 
 
 def info(msg, *args):
@@ -65,7 +50,7 @@ def info(msg, *args):
     :type args: list
     """
     if _logger:
-        _logger.log(INFO, msg, *args)
+        _logger.info(msg, *args)
 
 
 def warn(msg, *args):
@@ -78,7 +63,7 @@ def warn(msg, *args):
     :type args: list
     """
     if _logger:
-        _logger.log(WARNING, msg, *args)
+        _logger.warn(msg, *args)
 
 
 def error(msg, *args):
@@ -91,25 +76,55 @@ def error(msg, *args):
     :type args: list
     """
     if _logger:
-        _logger.log(ERROR, msg, *args)
+        _logger.error(msg, *args)
 
 
 def echo_error(msg):
+    """
+    convenience method to display a message using the **red** ANSI color,
+    the method relies on :func:`click.secho`
+
+    :param str msg: the message
+    """
     click.secho(msg, fg='red')
 
 
 def echo_info(msg):
+    """
+    convenience method to display a message using the **white** ANSI color,
+    the method relies on :func:`click.secho`
+
+    :param str msg: the message
+    """
     click.secho(msg, fg='white')
 
 
 def echo_warn(msg):
+    """
+    convenience method to display a message using the **yellow** ANSI color,
+    the method relies on :func:`click.secho`
+
+    :param str msg: the message
+    """
     click.secho(msg, fg='yellow')
 
 
 def echo_success(msg):
+    """
+    convenience method to display a message using the **green** ANSI color,
+    the method relies on :func:`click.secho`
+
+    :param str msg: the message
+    """
     click.secho(msg, fg='green')
 
 
 def echo(msg):
+    """
+    convenience method to display a message,
+    the method relies on :func:`click.echo`
+
+    :param str msg: the message
+    """
     click.echo(msg)
 

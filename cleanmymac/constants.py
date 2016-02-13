@@ -39,3 +39,6 @@ UNIT_MB = UNIT_KB * 1024
 
 #: 1 gigabyte
 UNIT_GB = UNIT_MB * 1024
+
+#: the progress bar advance delay (when in quiet mode). Nicer progress experience for fast targets
+PROGRESSBAR_ADVANCE_DELAY = 0.25

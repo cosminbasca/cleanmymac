@@ -33,17 +33,6 @@ execfile('{0}/__version__.py'.format(NAME))
 with open('README.rst') as f:
     DESCRIPTION = f.read()
 
-pip_deps = [
-    'sarge>=0.1.4',
-    'tqdm>=3.4.0',
-    'pyyaml>=3.11',
-    'voluptuous>=0.8.8',
-    'colorlog>=2.6.0',
-    'natsort>=4.0.4',
-    'click>=6.2',
-    'click-log>=0.1.3',
-]
-
 setup(
     name=NAME,
     version=str_version,
@@ -71,7 +60,15 @@ setup(
     package_data={
         '{0}/builtins'.format(NAME): ['*.yaml', ],
     },
-    install_requires=pip_deps,
+    install_requires=[
+        'sarge>=0.1.4',
+        'pyyaml>=3.11',
+        'voluptuous>=0.8.8',
+        'colorlog>=2.6.0',
+        'natsort>=4.0.4',
+        'click>=6.2',
+        'click-log>=0.1.3',
+    ],
     entry_points={
         'console_scripts': [
             'cleanmymac = cleanmymac.cli:cli'

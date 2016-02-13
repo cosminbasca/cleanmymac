@@ -12,7 +12,4 @@ The :mod:`cleanmymac.cli` Module
 Commandline Interface
 =====================
 
-.. argparse::
-        :module: cleanmymac.cli
-        :func: get_parser
-        :prog: cleanmymac
+.. program-output:: cleanmymac -h

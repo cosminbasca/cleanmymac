@@ -16,20 +16,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import click
 import click_log
 import os
-from tqdm import tqdm
 from yaml import load
+from time import sleep
 
 from cleanmymac.__version__ import str_version
-from cleanmymac.log import info, warn, error, debug, echo_warn
+from cleanmymac.log import info, warn, error, debug, echo_warn, echo_info
 from cleanmymac.registry import iter_targets, register_yaml_targets
 from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
 from cleanmymac.util import get_disk_usage
-from cleanmymac.constants import UNIT_KB, UNIT_MB
+from cleanmymac.constants import UNIT_MB, PROGRESSBAR_ADVANCE_DELAY
 
 __author__ = 'cosmin'
 
@@ -65,8 +64,11 @@ def _config_targets_path(config):
     return []
 
 
-@click.command(name='cleanmymac')
+@click.command(name='cleanmymac', context_settings={
+    'help_option_names': ['-h', '--help']
+})
 @click_log.init()
+@click_log.simple_verbosity_option('-L', '--log-level', default='INFO')
 @click.option('-u', '--update', is_flag=True, help='update the target if applicable')
 @click.option('-d', '--dry_run', is_flag=True, help='describe the actions to be performed, do not execute them')
 @click.option('-q', '--quiet', is_flag=True, help='run in quiet mode')
@@ -85,7 +87,7 @@ def cli(ctx, update, dry_run, quiet, list_targets, stop_on_error, config, target
 
     :param ctx:  the click context
     :type ctx: :class:`click.Context`
-    :param bool update: perform update of targets (if aplicable)
+    :param bool update: perform update of targets (if applicable)
     :param dry_run: do not execute the actions, but log the result
     :param quiet: quiet mode (no output), show a progressbar instead
     :param list_targets: list the installed targets
@@ -98,16 +100,12 @@ def cli(ctx, update, dry_run, quiet, list_targets, stop_on_error, config, target
 
     verbose = not quiet
     if targets:
-        targets_to_execute = set(targets)
+        target_names = set(targets)
     else:
-        targets_to_execute = set(all_targets.keys())
+        target_names = set(all_targets.keys())
 
-    targets_iterator = all_targets.iteritems() if verbose else tqdm(all_targets.iteritems())
-
-    _log = info if verbose else debug
-    _describe = warn if verbose else debug
-
-    _log('found {0} registered cleanup targets'.format(len(all_targets)))
+    log_message = echo_info if verbose else lambda msg: msg
+    log_message('found {0} registered cleanup targets'.format(len(all_targets)))
 
     config = get_options(path=config)
     # register extra targets if any
@@ -117,33 +115,42 @@ def cli(ctx, update, dry_run, quiet, list_targets, stop_on_error, config, target
         register_yaml_targets(targets_path)
 
     if list_targets:
-        for name, target_initializer in targets_iterator:
+        for name, target_initializer in all_targets.items():
             echo_warn(' > {0}'.format(name))
     else:
-        free_space_before = get_disk_usage('/', unit=UNIT_MB).free
-        for name, target_initializer in targets_iterator:
-            if name not in targets_to_execute:
-                continue
-            _log('\ncleaning: {0}'.format(name.upper()))
-            target_cfg = config[name] if name in config else None
-            target = target_initializer(target_cfg, update=update, verbose=verbose)
-
-            if not isinstance(target, Target):
-                error('expected an instance of Target, instead got: {0}'.format(target))
-                continue
-
-            if dry_run:
-                _describe(target.describe())
+        with click.progressbar(all_targets.items(), label='Processing cleanup targets:', width=40) as all_targets_bar:
+            free_space_before = get_disk_usage('/', unit=UNIT_MB).free
+            if verbose:
+                targets_to_process = all_targets.items()
             else:
-                try:
-                    target()
-                except Exception, ex:
-                    error('could not cleanup target "{0}". Reason:\n{1}'.format(
-                        name, ex))
-                    if stop_on_error:
-                        break
+                targets_to_process = all_targets_bar
 
-        free_space_after = get_disk_usage('/', unit=UNIT_MB).free
-        if not dry_run:
-            _log('\ncleanup complete')
-            _log('freed {0:.3f} MB of disk space'.format(free_space_after-free_space_before))
+            for name, target_initializer in targets_to_process:
+                if name not in target_names:
+                    continue
+                log_message('\ncleaning: {0}'.format(name.upper()))
+                target_cfg = config[name] if name in config else None
+                target = target_initializer(target_cfg, update=update, verbose=verbose)
+
+                if not isinstance(target, Target):
+                    error('expected an instance of Target, instead got: {0}'.format(target))
+                    continue
+
+                if dry_run:
+                    echo_warn(target.describe())
+                else:
+                    try:
+                        target()
+                    except Exception, ex:
+                        error('could not cleanup target "{0}". Reason:\n{1}'.format(
+                            name, ex))
+                        if stop_on_error:
+                            break
+
+                if not verbose:
+                    sleep(PROGRESSBAR_ADVANCE_DELAY)  # nicer progress bar display for fast executing targets
+
+            free_space_after = get_disk_usage('/', unit=UNIT_MB).free
+            if not dry_run:
+                log_message('\ncleanup complete')
+                log_message('freed {0:.3f} MB of disk space'.format(free_space_after-free_space_before))
