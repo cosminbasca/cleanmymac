@@ -24,7 +24,8 @@ from cleanmymac.util import yaml_files
 
 from cleanmymac.builtins import BUILTINS_PATH
 from cleanmymac.log import debug, error
-from cleanmymac.constants import TARGET_ENTRY_POINT, VALID_TARGET_TYPES, TYPE_TARGET_CMD, TYPE_TARGET_DIR
+from cleanmymac.constants import TARGET_ENTRY_POINT, VALID_TARGET_TYPES, TYPE_TARGET_CMD, TYPE_TARGET_DIR, \
+    GLOBAL_CONFIG_FILE
 from cleanmymac.schema import validate_yaml_target
 from cleanmymac.target import Target, YamlShellCommandTarget, YamlDirTarget
 
@@ -49,27 +50,32 @@ def load_target(yaml_file, config, update=False, verbose=False, strict=True):
     :rtype: :class:`cleanmymac.target.Target`
     """
     with open(yaml_file, 'r+') as DESC:
-        description = load(DESC)
-        description = validate_yaml_target(description, strict=strict)
-        _type = description['type']
-        if _type not in VALID_TARGET_TYPES:
-            error('unknown yaml target type: "{0}", valid options are: {1}'.format(
-                    _type, VALID_TARGET_TYPES
-            ))
+        try:
+            description = load(DESC)
+            description = validate_yaml_target(description, strict=strict)
+            _type = description['type']
+            if _type not in VALID_TARGET_TYPES:
+                error('unknown yaml target type: "{0}", valid options are: {1}'.format(
+                        _type, VALID_TARGET_TYPES
+                ))
+                return None
+
+            target_class = __YAML_TYPES__[_type]
+            if not issubclass(target_class, Target):
+                error('expected a subclass of Target for "{0}", instead got: "{1}"'.format(
+                        os.path.basename(yaml_file), target_class
+                ))
+                return None
+
+            if not config:
+                config = {}
+            config['spec'] = description['spec']
+            return target_class(config, update=update, verbose=verbose)
+        except Exception, e:
+            error('Error loading configuration: "{0}". Reason: {1}'.format(yaml_file, e))
+            if strict:
+                raise e
             return None
-
-        target_class = __YAML_TYPES__[_type]
-        if not issubclass(target_class, Target):
-            error('expected a subclass of Target for "{0}", instead got: "{1}"'.format(
-                    os.path.basename(yaml_file), target_class
-            ))
-            return None
-
-        if not config:
-            config = {}
-        config['spec'] = description['spec']
-        return target_class(config, update=update, verbose=verbose)
-
 
 def register_target(name, target):
     """
@@ -96,6 +102,8 @@ def register_yaml_targets(path):
     """
     global __TARGETS__
     for name, yaml_file in yaml_files(path):
+        if os.path.basename(yaml_file) == GLOBAL_CONFIG_FILE:
+            continue
         debug('registering : {0}'.format(name))
         __TARGETS__[name] = partial(load_target, yaml_file)
 

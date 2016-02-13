@@ -29,7 +29,7 @@ from cleanmymac.registry import iter_targets, register_yaml_targets, get_targets
 from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
 from cleanmymac.util import get_disk_usage, progressbar
-from cleanmymac.constants import UNIT_MB, PROGRESSBAR_ADVANCE_DELAY
+from cleanmymac.constants import UNIT_MB, PROGRESSBAR_ADVANCE_DELAY, GLOBAL_CONFIG_FILE
 
 __author__ = 'cosmin'
 
@@ -48,7 +48,7 @@ def get_options(path=None):
     """
     cfg = {}
     if not path:
-        path = os.path.join(os.path.expanduser('~'), '.cleanmymac.yaml')
+        path = os.path.join(os.path.expanduser('~'), GLOBAL_CONFIG_FILE)
     path = os.path.abspath(path)
     debug_param('global config', path)
     if not os.path.exists(path):

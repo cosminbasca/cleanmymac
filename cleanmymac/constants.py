@@ -19,6 +19,9 @@
 #: the main entry point for externally defined :class:`cleanmymac.target.Target` extensions
 TARGET_ENTRY_POINT = 'cleanmymac.target'
 
+#: the global config file name
+GLOBAL_CONFIG_FILE = '.cleanmymac.yaml'
+
 #: the **YAML** constant used to identify targets of type: :class:`cleanmymac.target.ShellCommandTarget`
 TYPE_TARGET_CMD = 'cmd'
 
