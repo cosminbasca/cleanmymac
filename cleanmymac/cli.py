@@ -142,22 +142,22 @@ def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, tar
                     continue
                 echo_target('\ncleaning: {0}'.format(name.upper()), verbose=verbose)
                 target_cfg = config[name] if name in config else None
-                target = target_initializer(target_cfg, update=update, verbose=verbose, strict=strict)
 
-                if not isinstance(target, Target):
-                    error('expected an instance of Target, instead got: {0}'.format(target))
-                    continue
+                try:
+                    target = target_initializer(target_cfg, update=update, verbose=verbose, strict=strict)
 
-                if dry_run:
-                    echo_warn(target.describe())
-                else:
-                    try:
+                    if not isinstance(target, Target):
+                        error('expected an instance of Target, instead got: {0}'.format(target))
+                        continue
+
+                    if dry_run:
+                        echo_warn(target.describe())
+                    else:
                         target()
-                    except Exception, ex:
-                        error('could not cleanup target "{0}". Reason:\n{1}'.format(
-                            name, ex))
-                        if stop_on_error:
-                            break
+                except Exception, ex:
+                    error('could not cleanup target "{0}". Reason:\n{1}'.format(name, ex))
+                    if stop_on_error:
+                        break
 
                 if not verbose:
                     sleep(PROGRESSBAR_ADVANCE_DELAY)  # nicer progress bar display for fast executing targets
