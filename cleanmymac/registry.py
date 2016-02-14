@@ -71,11 +71,12 @@ def load_target(yaml_file, config, update=False, verbose=False, strict=True):
                 config = {}
             config['spec'] = description['spec']
             return target_class(config, update=update, verbose=verbose)
-        except Exception, e:
+        except Exception as e:
             error('Error loading configuration: "{0}". Reason: {1}'.format(yaml_file, e))
             if strict:
                 raise e
             return None
+
 
 def register_target(name, target):
     """

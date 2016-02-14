@@ -3,6 +3,14 @@ Changelog
 
 All major changes between **cleanmymac** releases
 
+Version 0.1.15
+--------------
+
+- compatibility with python 2.6 / 2.7 / 3.5 and pypy
+- tox support for py26, py27, py35 and pypy
+- early test module (only the schema is tested so far), more tests to come
+- new pytest and six dependencies are in
+
 Version 0.1.14
 --------------
 

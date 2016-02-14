@@ -19,12 +19,11 @@ import logging
 import click
 import click_log
 
+from six import string_types
 from pprint import pformat
 
 
 #: the main **cleanmymac** logger name
-import click_log
-
 LOGGER_NAME = 'cleanmymac'
 
 #: the internal **cleanmymac** logger object
@@ -40,7 +39,7 @@ def _log(level, msg, *args):
     :param list args: message arguments
     """
     if _logger:
-        if not isinstance(msg, basestring):
+        if not isinstance(msg, string_types):
             msg = pformat(msg)
         _logger.log(level, msg, *args)
 

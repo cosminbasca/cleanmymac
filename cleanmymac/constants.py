@@ -29,10 +29,10 @@ TYPE_TARGET_CMD = 'cmd'
 TYPE_TARGET_DIR = 'dir'
 
 #: the **YAML** valid target types
-VALID_TARGET_TYPES = frozenset({
+VALID_TARGET_TYPES = frozenset([
     TYPE_TARGET_DIR,
     TYPE_TARGET_CMD
-})
+])
 
 #: 1 kilobyte
 UNIT_KB = 1024

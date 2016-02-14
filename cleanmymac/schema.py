@@ -123,7 +123,7 @@ def validate_yaml_target(description, strict=True):
     try:
         schema = __TYPE_SCHEMA__[_type](strict=strict)
         description['spec'] = schema(_spec)
-    except Exception, e:
+    except Exception as e:
         error(e)
         if strict:
             raise e
