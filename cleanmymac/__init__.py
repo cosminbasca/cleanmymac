@@ -18,9 +18,32 @@
 
 __author__ = 'cosmin'
 
-from __version__ import str_version, version
-from log import *
-from constants import *
-from registry import *
-from target import *
-from util import *
+from .__version__ import str_version, version
+from .constants import *
+from .log import (
+    debug, debug_param, is_debug,
+    is_level,
+    echo, echo_info, echo_warn, echo_error, echo_success, echo_target,
+    error, info, warn,
+    LOGGER_NAME
+)
+from .registry import (
+    get_target,
+    get_targets_as_table,
+    iter_targets,
+    load_target,
+    register_target,
+    register_yaml_targets
+)
+from .schema import IsDirUserExpand, validate_yaml_config
+from .target import DirTarget, ShellCommandTarget, Target, YamlShellCommandTarget, YamlDirTarget
+from .util import (
+    delete_dir_content,
+    delete_dirs,
+    get_disk_usage,
+    progressbar,
+    yaml_files,
+    Dir,
+    DirList,
+    DiskUsage
+)
