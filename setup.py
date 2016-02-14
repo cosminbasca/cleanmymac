@@ -70,6 +70,7 @@ setup(
         'click>=6.2',
         'click-log>=0.1.3',
         'tabulate>=0.7.5',
+        'pytest>=2.8.7',
     ],
     entry_points={
         'console_scripts': [

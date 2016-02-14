@@ -15,9 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-__author__ = 'cosmin'
-
 from .__version__ import str_version, version
 from .constants import *
 from .log import (
@@ -47,3 +44,5 @@ from .util import (
     DirList,
     DiskUsage
 )
+
+__author__ = 'cosmin'
