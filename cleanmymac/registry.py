@@ -141,7 +141,7 @@ def get_targets_as_table(simple=True, fancy=False):
 
     def row(name, target):
         data = [name.upper()]
-        t = target(None, False, False)
+        t = target(None, update=False, verbose=False, strict=False)
         data.append(t.__class__.__name__ if simple else t.__class__)
         return data
 
