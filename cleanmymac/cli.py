@@ -165,5 +165,5 @@ def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, tar
             free_space_after = get_disk_usage('/', unit=UNIT_MB).free
             if not dry_run:
                 echo_info('\ncleanup complete', verbose=verbose)
-                echo_success('freed {0:.3f} MB of disk space'.format(free_space_after - free_space_before),
-                             verbose=verbose)
+                echo_success('\nfreed {0:.3f} MB of disk space'.format(free_space_after - free_space_before),
+                             verbose=True, nl=verbose)

@@ -132,16 +132,17 @@ def echo_warn(msg, verbose=True):
         click.secho(msg, fg='yellow')
 
 
-def echo_success(msg, verbose=True):
+def echo_success(msg, verbose=True, nl=True):
     """
     convenience method to display a message using the **green** ANSI color,
     the method relies on :func:`click.secho`
 
     :param str msg: the message
     :param bool verbose: echo message only if True
+    :param bool nl: print new line
     """
     if verbose:
-        click.secho(msg, fg='green')
+        click.secho(msg, fg='green', nl=nl)
 
 
 def echo_target(msg, verbose=True):
