@@ -81,7 +81,7 @@ def _config_targets_path(config):
 @click.option('-c', '--config', default=None, envvar='CLEANMYMAC_CONFIG', help='specify the configuration path')
 @click.option('-t', '--targets_path', default=None, type=click.Path(exists=True), multiple=True,
               help='specify extra yaml defined targets path')
-@click.version_option(version=str_version)
+@click.version_option(str_version, '-v', '--version')
 @click.argument('targets', metavar='TARGETS', type=str, nargs=-1)
 def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, targets_path, targets, **kwargs):
     """
