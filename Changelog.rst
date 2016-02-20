@@ -10,6 +10,7 @@ Version 0.1.15
 - tox support for py26, py27, py35 and pypy
 - early test module (only the schema is tested so far), more tests to come
 - new pytest and six dependencies are in
+- nicer message formatting in dry-run mode
 
 Version 0.1.14
 --------------

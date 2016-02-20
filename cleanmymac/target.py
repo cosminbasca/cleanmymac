@@ -15,14 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import click
+import os
+import re
+from pprint import pformat
+from natsort import natsorted
+from sarge import run, shell_format, Capture
 from abc import ABCMeta, abstractmethod, abstractproperty
 from cleanmymac.log import info, debug, error, warn, echo_info, echo_warn, echo_success
 from cleanmymac.util import delete_dir_content, DirList, Dir, delete_dirs
-from sarge import run, shell_format, Capture
-from natsort import natsorted
-from pprint import pformat
-import os
-import re
+from cleanmymac.constants import DESCRIBE_UPDATE, DESCRIBE_CLEAN, VALID_DESCRIBE_MESSAGES
 
 
 # ----------------------------------------------------------------------------------------
@@ -81,6 +83,19 @@ class Target(object):
         :rtype: str
         """
         return ''
+
+    @staticmethod
+    def __describe__(kind, message, fg=None):
+        assert kind.lower() in VALID_DESCRIBE_MESSAGES
+        max_len = max(map(len, VALID_DESCRIBE_MESSAGES))
+        fmt_string = '[ {0: <' + str(max_len+1) + '}]  {1}'
+        return click.style(fmt_string.format(kind.lower(), message), fg=fg)
+
+    def _describe_update(self, message, fg='yellow'):
+        return self.__describe__(DESCRIBE_UPDATE, message, fg=fg)
+
+    def _describe_clean(self, message, fg='white'):
+        return self.__describe__(DESCRIBE_CLEAN, message, fg=fg)
 
     def __call__(self, **kwargs):
         """
@@ -173,8 +188,8 @@ class ShellCommandTarget(Target):
     def describe(self):
         commands_to_run = []
         if self._update:
-            commands_to_run += self._describe(self.update_commands)
-        commands_to_run += self._describe(self.clean_commands)
+            commands_to_run += map(self._describe_update, self._describe(self.update_commands))
+        commands_to_run += map(self._describe_clean, self._describe(self.clean_commands))
         return '\n'.join(commands_to_run)
 
 
@@ -276,14 +291,19 @@ class DirTarget(Target):
     def describe(self):
         msgs = []
         if self._update and self.update_message:
-            msgs.append(self.update_message)
+            msgs.append(self._describe_update(self.update_message))
 
+        nothing_to_remove = True
         for entry in self._to_remove():
             if isinstance(entry, DirList) and entry.dirs:
-                msgs.append('delete folders: {0}'.format(pformat(entry.dirs)))
+                msgs.append(self._describe_clean('delete folders: {0}'.format(pformat(entry.dirs))))
+                nothing_to_remove = False
             elif isinstance(entry, Dir):
-                msgs.append('delete folder contents: {0}'.format(entry.path))
+                msgs.append(self._describe_clean('delete folder contents: {0}'.format(entry.path)))
+                nothing_to_remove = False
 
+        if nothing_to_remove:
+            msgs.append(self._describe_clean('There are no folders to delete/clean'))
         return '\n'.join(msgs)
 
     @abstractproperty

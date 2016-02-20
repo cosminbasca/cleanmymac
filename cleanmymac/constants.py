@@ -45,3 +45,10 @@ UNIT_GB = UNIT_MB * 1024
 
 #: the progress bar advance delay (when in quiet mode). Nicer progress experience for fast targets
 PROGRESSBAR_ADVANCE_DELAY = 0.25
+
+DESCRIBE_CLEAN = 'clean'
+DESCRIBE_UPDATE = 'update'
+VALID_DESCRIBE_MESSAGES = frozenset([
+    DESCRIBE_CLEAN,
+    DESCRIBE_UPDATE
+])
