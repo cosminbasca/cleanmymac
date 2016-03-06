@@ -50,6 +50,9 @@ class Target(object):
         self._update = update
         self._verbose = verbose
 
+    def _debug(self, msg, *arg):
+        debug('[{0}] {1}'.format(click.style(str(self.__class__.__name__), fg='yellow'), msg))
+
     @property
     def config(self):
         return self._config
@@ -105,7 +108,9 @@ class Target(object):
         :type kwargs: dict
         """
         if self._update:
+            self._debug('update target')
             self.update(**kwargs)
+        self._debug('clean target')
         self.clean(**kwargs)
 
 
@@ -137,6 +142,7 @@ class ShellCommandTarget(Target):
             path = '{0}:{1}'.format(os.environ['PATH'],
                                     os.path.expanduser(self._env['PATH']))
         self._env['PATH'] = path
+        self._debug('target local env: {0}'.format(pformat(self._env)))
 
     @abstractproperty
     def update_commands(self):
@@ -160,6 +166,7 @@ class ShellCommandTarget(Target):
 
     def _run(self, commands):
         for cmd in commands:
+            self._debug('run command "{0}"'.format(cmd))
             try:
                 if self._verbose:
                     with Capture() as err:
@@ -212,6 +219,7 @@ class YamlShellCommandTarget(ShellCommandTarget):
     """
     def __init__(self, config, update=False, verbose=False):
         self._spec = config['spec']
+        self._debug('spec: {0}'.format(pformat(self._spec)))
         super(YamlShellCommandTarget, self).__init__(config, update=update, verbose=verbose)
 
     @property
@@ -267,14 +275,18 @@ class DirTarget(Target):
 
     def _to_remove(self):
         for entry in self.entries:
+            self._debug('check entry "{0}" to clean'.format(entry['dir']))
             _dir = os.path.expanduser(entry['dir'])
             if 'pattern' in entry:
                 _pattern = entry['pattern']
                 dirs = [os.path.join(_dir, d) for d in os.listdir(_dir)
                         if os.path.isdir(os.path.join(_dir, d)) and re.match(_pattern, d)]
                 dirs = natsorted(dirs, reverse=True)
-                yield DirList(dirs[1:])
+                dir_list = DirList(dirs[1:])
+                self._debug('\tremove multiple directories: {0}'.format(dir_list.dirs))
+                yield dir_list
             else:
+                self._debug('\tremove single directory: {0}'.format(_dir))
                 yield Dir(_dir)
 
     def clean(self, **kwargs):
@@ -338,6 +350,7 @@ class YamlDirTarget(DirTarget):
     """
     def __init__(self, config, update=False, verbose=False):
         self._spec = config['spec']
+        self._debug('spec: {0}'.format(pformat(self._spec)))
         super(YamlDirTarget, self).__init__(config, update=update, verbose=verbose)
 
     @property

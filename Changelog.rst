@@ -3,6 +3,14 @@ Changelog
 
 All major changes between **cleanmymac** releases
 
+
+Version 0.1.16
+--------------
+
+- fixed bug where target names was case sensitive
+- better debug messages when -L DEBUG is set, sarge logger disabled by default
+- new disable_logger function
+
 Version 0.1.15
 --------------
 

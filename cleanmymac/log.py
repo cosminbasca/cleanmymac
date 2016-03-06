@@ -30,6 +30,16 @@ LOGGER_NAME = 'cleanmymac'
 _logger = logging.getLogger(LOGGER_NAME)
 
 
+def disable_logger(name):
+    """
+    disable the given logger
+
+    :param name: the name of the logger
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(100)
+
+
 def _log(level, msg, *args):
     """
     log messages.

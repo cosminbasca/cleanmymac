@@ -21,10 +21,11 @@ import click_log
 import os
 from yaml import load
 from time import sleep
+from pprint import pformat
 
 from cleanmymac.__version__ import str_version
 from cleanmymac.log import info, warn, error, debug, echo_warn, echo_info, echo_target, is_debug, echo, echo_success, \
-    debug_param
+    debug_param, disable_logger
 from cleanmymac.registry import iter_targets, register_yaml_targets, get_targets_as_table
 from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
@@ -98,23 +99,30 @@ def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, tar
     :param targets_path: extra targets paths
     :param targets: the targets
     """
+    disable_logger('sarge')
+    targets = tuple([target.lower() for target in targets])
+
+    debug_param('update', update)
     debug_param('dry run', dry_run)
     debug_param('quiet mode', quiet)
     debug_param('strict mode', strict)
     debug_param('list available targets', list_targets)
     debug_param('stop on error', stop_on_error)
+    debug_param('global config path', config)
     debug_param('extra targets path', targets_path)
+    debug_param('targets', targets)
+    debug('')
 
     all_targets = dict(iter_targets())
     if is_debug():
         debug("Detailed information about registered targets")
         debug(get_targets_as_table(simple=False, fancy=False))
-        echo("\n")
 
     if dry_run:
         verbose = True
     else:
         verbose = not quiet
+    debug_param('verbose', verbose)
 
     if targets:
         target_names = set(targets)
@@ -139,9 +147,11 @@ def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, tar
 
             for name, target_initializer in all_targets_bar:
                 if name not in target_names:
+                    debug('skipping target "{0}"'.format(name))
                     continue
                 echo_target('\ncleaning: {0}'.format(name.upper()), verbose=verbose)
                 target_cfg = config[name] if name in config else None
+                debug("got target configuration: {0}".format(pformat(target_cfg)))
 
                 try:
                     target = target_initializer(target_cfg, update=update, verbose=verbose, strict=strict)
