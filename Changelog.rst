@@ -4,6 +4,11 @@ Changelog
 All major changes between **cleanmymac** releases
 
 
+Version 0.1.17
+--------------
+
+- new *pretty_print* argument, False by default. Color printing mode disabled by default
+
 Version 0.1.16
 --------------
 

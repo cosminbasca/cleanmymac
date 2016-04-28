@@ -31,6 +31,7 @@ from cleanmymac.schema import validate_yaml_config
 from cleanmymac.target import Target
 from cleanmymac.util import get_disk_usage, progressbar
 from cleanmymac.constants import UNIT_MB, PROGRESSBAR_ADVANCE_DELAY, GLOBAL_CONFIG_FILE
+from cleanmymac.colors import set_pretty_print
 
 __author__ = 'cosmin'
 
@@ -75,6 +76,7 @@ def _config_targets_path(config):
 @click.option('-u', '--update', is_flag=True, help='update the target if applicable')
 @click.option('-d', '--dry_run', is_flag=True, help='describe the actions to be performed, do not execute them')
 @click.option('-q', '--quiet', is_flag=True, help='run in quiet mode')
+@click.option('-p', '--pretty-print', is_flag=True, help='enable pretty printing with colors')
 @click.option('--strict/--no-strict', default=True,
               help='strict mode: enforce strict(er) rules when validating targets')
 @click.option('-l', '--list', 'list_targets', is_flag=True, help='list registered cleanup targets')
@@ -84,27 +86,31 @@ def _config_targets_path(config):
               help='specify extra yaml defined targets path')
 @click.version_option(str_version, '-v', '--version')
 @click.argument('targets', metavar='TARGETS', type=str, nargs=-1)
-def cli(update, dry_run, quiet, strict, list_targets, stop_on_error, config, targets_path, targets, **kwargs):
+def cli(update, dry_run, quiet, pretty_print, strict, list_targets, stop_on_error, config, targets_path, targets, **kwargs):
     """
     the main **run** method, responsible for creating the parser and executing the main logic in
     **cleanmymac**
 
     :param bool update: perform update of targets (if applicable)
-    :param dry_run: do not execute the actions, but log the result
-    :param quiet: quiet mode (no output), show a progressbar instead
-    :param strict: if set enforce strict(er) rules when validating targets
-    :param list_targets: list the installed targets
-    :param stop_on_error: abort the execution on first error
-    :param config: the configuration path
-    :param targets_path: extra targets paths
-    :param targets: the targets
+    :param bool dry_run: do not execute the actions, but log the result
+    :param bool quiet: quiet mode (no output), show a progressbar instead
+    :param bool pretty_print: enable pretty printing with colors
+    :param bool strict: if set enforce strict(er) rules when validating targets
+    :param bool list_targets: list the installed targets
+    :param bool stop_on_error: abort the execution on first error
+    :param str config: the configuration path
+    :param str targets_path: extra targets paths
+    :param list targets: the targets
     """
     disable_logger('sarge')
     targets = tuple([target.lower() for target in targets])
 
+    set_pretty_print(pretty_print)
+
     debug_param('update', update)
     debug_param('dry run', dry_run)
     debug_param('quiet mode', quiet)
+    debug_param('pretty print', pretty_print)
     debug_param('strict mode', strict)
     debug_param('list available targets', list_targets)
     debug_param('stop on error', stop_on_error)

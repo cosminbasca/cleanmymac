@@ -21,6 +21,7 @@ import click_log
 
 from six import string_types
 from pprint import pformat
+from cleanmymac.colors import get_color
 
 
 #: the main **cleanmymac** logger name
@@ -69,11 +70,11 @@ def debug_param(msg, value, padding=30):
     helper method to debug parameter values, with alignment
 
     :param str msg: the message
-    :param str value: the value
+    :param Object value: the value
     :param int padding: padding for the message
     """
     fmt = '{0: <' + str(padding) + '} : {1}'
-    debug(fmt.format(msg, click.style(str(value), fg='yellow')))
+    debug(fmt.format(msg, click.style(str(value), fg=get_color('debug'))))
 
 
 def info(msg, *args):
@@ -115,7 +116,7 @@ def echo_error(msg, verbose=True):
     :param bool verbose: echo message only if True
     """
     if verbose:
-        click.secho(msg, fg='red')
+        click.secho(msg, fg=get_color('error'))
 
 
 def echo_info(msg, verbose=True):
@@ -127,7 +128,7 @@ def echo_info(msg, verbose=True):
     :param bool verbose: echo message only if True
     """
     if verbose:
-        click.secho(msg, fg='white')
+        click.secho(msg, fg=get_color('info'))
 
 
 def echo_warn(msg, verbose=True):
@@ -139,7 +140,7 @@ def echo_warn(msg, verbose=True):
     :param bool verbose: echo message only if True
     """
     if verbose:
-        click.secho(msg, fg='yellow')
+        click.secho(msg, fg=get_color('warn'))
 
 
 def echo_success(msg, verbose=True, nl=True):
@@ -152,7 +153,7 @@ def echo_success(msg, verbose=True, nl=True):
     :param bool nl: print new line
     """
     if verbose:
-        click.secho(msg, fg='green', nl=nl)
+        click.secho(msg, fg=get_color('success'), nl=nl)
 
 
 def echo_target(msg, verbose=True):
@@ -164,7 +165,7 @@ def echo_target(msg, verbose=True):
     :param bool verbose: echo message only if True
     """
     if verbose:
-        click.secho(msg, fg='blue')
+        click.secho(msg, fg=get_color('target'))
 
 
 def echo(msg):
