@@ -40,6 +40,7 @@ Api Reference:
 
    modules/builtins
    modules/cli
+   modules/colors
    modules/constants
    modules/log
    modules/registry
