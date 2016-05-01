@@ -168,17 +168,17 @@ class ShellCommandTarget(Target):
         for cmd in commands:
             self._debug('run command "{0}"'.format(cmd))
             try:
-                if self._verbose:
-                    with Capture() as err:
-                        with Capture() as out:
+                with Capture() as err:
+                    with Capture() as out:
+                        if self._verbose:
                             echo_success('running: {0}'.format(cmd))
-                            run(cmd, stdout=out, stderr=err, env=self._env)
+
+                        run(cmd, stdout=out, stderr=err, env=self._env)
+
+                        if self._verbose:
                             echo_info(out.text)
                             warn(err.text)
-                else:
-                    with Capture() as err:
-                        with Capture() as out:
-                            run(cmd, stderr=err, stdout=out, env=self._env)
+
             except OSError:
                 error('command: "{0}" could not be executed (not found?)'.format(cmd))
 
