@@ -20,6 +20,8 @@ import os
 import re
 from pprint import pformat
 from natsort import natsorted
+from threading import Thread, Event
+from time import sleep
 from sarge import run, shell_format, Capture
 from abc import ABCMeta, abstractmethod, abstractproperty
 from cleanmymac.log import info, debug, error, warn, echo_info, echo_warn, echo_success
@@ -173,11 +175,34 @@ class ShellCommandTarget(Target):
                         if self._verbose:
                             echo_success('running: {0}'.format(cmd))
 
-                        run(cmd, stdout=out, stderr=err, env=self._env)
+                        command_done = Event()
+
+                        def redirect():
+                            while not command_done.is_set():
+                                try:
+                                    for line in out:
+                                        echo_info(line.strip())
+                                except TypeError:
+                                    pass
+
+                                try:
+                                    for line in err:
+                                        warn(line.strip())
+                                except TypeError:
+                                    pass
+
+                                sleep(0.05)
+
+                        p = run(cmd, stdout=out, stderr=err, env=self._env, async=True)
 
                         if self._verbose:
-                            echo_info(out.text)
-                            warn(err.text)
+                            Thread(target=redirect).start()
+
+                        try:
+                            p.wait()
+                        finally:
+                            # make sure the console redirect thread is properly shutting down
+                            command_done.set()
 
             except OSError:
                 error('command: "{0}" could not be executed (not found?)'.format(cmd))
