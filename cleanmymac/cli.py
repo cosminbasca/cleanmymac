@@ -68,6 +68,9 @@ def _config_targets_path(config):
     return []
 
 
+_HORIZONTAL_RULE = '\n{0}'.format(''.join(['-' for i in range(80)]))
+
+
 @click.command(name='cleanmymac', context_settings={
     'help_option_names': ['-?', '-h', '--help']
 })
@@ -135,6 +138,9 @@ def cli(update, dry_run, quiet, pretty_print, strict, list_targets, stop_on_erro
     else:
         target_names = set(all_targets.keys())
 
+    if update:
+        echo_warn('updating may result in an increase of the total space taken by the cleanup targets', verbose=verbose)
+
     echo_info('found {0} registered cleanup targets'.format(len(all_targets)), verbose=verbose)
 
     config = get_options(path=config)
@@ -152,6 +158,7 @@ def cli(update, dry_run, quiet, pretty_print, strict, list_targets, stop_on_erro
             free_space_before = get_disk_usage('/', unit=UNIT_MB).free
 
             for name, target_initializer in all_targets_bar:
+                echo_info(_HORIZONTAL_RULE, verbose=verbose)
                 if name not in target_names:
                     debug('skipping target "{0}"'.format(name))
                     continue
