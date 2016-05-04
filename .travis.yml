@@ -6,7 +6,9 @@ python:
   - "pypy"
 # command to install dependencies
 install:
+  - echo `pwd`
+  - ls
   - pip install -r requirements.txt
-  - python setup.py install
+  - python setup.py develop
 # command to run tests
 script: py.test
