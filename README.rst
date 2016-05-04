@@ -1,3 +1,9 @@
+status
+======
+
+.. image:: https://travis-ci.org/cosminbasca/cleanmymac.svg?branch=master
+:target: https://travis-ci.org/cosminbasca/cleanmymac
+
 cleanmymac
 ==========
 
