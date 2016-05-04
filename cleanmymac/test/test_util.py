@@ -29,11 +29,13 @@ def test_yaml_files():
 
 
 def test_delete_dir_content():
-    start_len = len(os.listdir(tempfile.gettempdir()))
-    with tempfile.NamedTemporaryFile() as a_file:
-        with tempfile.NamedTemporaryFile() as b_file:
-            assert len(os.listdir(tempfile.gettempdir())) == start_len + 2
-    delete_dir_content(Dir(tempfile.gettempdir()))
-    assert len(os.listdir(tempfile.gettempdir())) == 0
+    tmp_dir = tempfile.mkdtemp()
+
+    start_len = len(os.listdir(tmp_dir))
+    with tempfile.NamedTemporaryFile(dir=tmp_dir) as a_file:
+        with tempfile.NamedTemporaryFile(dir=tmp_dir) as b_file:
+            assert len(os.listdir(tmp_dir)) == start_len + 2
+    delete_dir_content(Dir(tmp_dir))
+    assert len(os.listdir(tmp_dir)) == 0
     with pytest.raises(AssertionError):
-        delete_dir_content(tempfile.gettempdir())
+        delete_dir_content(tmp_dir)
